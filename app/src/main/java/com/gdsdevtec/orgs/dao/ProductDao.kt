@@ -9,7 +9,7 @@ object ProductDao {
         products.add(product)
     }
 
-    fun getAllProducts() = products.toList()
+    fun getAllProducts() : List<Product> = products.toList()
 
     fun removeProduct(product: Product) = products.remove(product)
 

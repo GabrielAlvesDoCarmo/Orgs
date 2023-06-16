@@ -1,5 +1,6 @@
 package com.gdsdevtec.orgs.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -7,11 +8,12 @@ import com.gdsdevtec.orgs.databinding.ItemProductBinding
 import com.gdsdevtec.orgs.model.Product
 
 class ProductsAdapter(
-    private val listProducts : List<Product>
+    listProducts: List<Product>
 ) : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
     inner class ProductViewHolder(val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root)
 
+    private val listProducts = listProducts.toMutableList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return ProductViewHolder(
             ItemProductBinding.inflate(
@@ -33,8 +35,14 @@ class ProductsAdapter(
 
     private fun convertBigDecimal(product: Product) = try {
         product.value.toString()
-    }catch (e: Exception) {
+    } catch (e: Exception) {
         "Erro"
+    }
+
+    fun updateList(products: List<Product>) {
+        listProducts.clear()
+        listProducts.addAll(products)
+        notifyDataSetChanged()
     }
 
 }

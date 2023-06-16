@@ -8,18 +8,12 @@ import com.gdsdevtec.orgs.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val binding : ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private lateinit var productAdapter : ProductsAdapter
+    private val productAdapter : ProductsAdapter = ProductsAdapter(ProductDao.getAllProducts())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupScreen()
-    }
-
-    private fun setupScreen() {
-        productAdapter = ProductsAdapter(ProductDao.getAllProducts())
         bindingSetup()
     }
-
     private fun bindingSetup() = binding.run {
         rvMain.adapter = productAdapter
         mainFabAdd.setOnClickListener {
@@ -27,5 +21,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(this)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        productAdapter.updateList(ProductDao.getAllProducts())
     }
 }
