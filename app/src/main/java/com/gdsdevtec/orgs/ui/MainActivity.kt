@@ -1,5 +1,6 @@
 package com.gdsdevtec.orgs.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.gdsdevtec.orgs.dao.ProductDao
@@ -11,7 +12,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setupScreen()
+    }
+
+    private fun setupScreen() {
         productAdapter = ProductsAdapter(ProductDao.getAllProducts())
-        binding.rvMain.adapter = productAdapter
+        bindingSetup()
+    }
+
+    private fun bindingSetup() = binding.run {
+        rvMain.adapter = productAdapter
+        mainFabAdd.setOnClickListener {
+            Intent(this@MainActivity, FormActivity::class.java).apply {
+                startActivity(this)
+            }
+        }
     }
 }
