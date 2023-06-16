@@ -8,7 +8,7 @@ import com.gdsdevtec.orgs.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val binding : ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val productAdapter : ProductsAdapter = ProductsAdapter(ProductDao.getAllProducts())
+    private val productAdapter : ProductsAdapter = ProductsAdapter(getProducts())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        productAdapter.updateList(ProductDao.getAllProducts())
+        productAdapter.updateList(getProducts())
     }
+    private fun getProducts() = ProductDao.getAllProducts()
 }
