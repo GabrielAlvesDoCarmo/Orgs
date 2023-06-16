@@ -24,9 +24,17 @@ class ProductsAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = listProducts[position]
-        holder.itemView.apply {
-
+        holder.binding.apply {
+            this.itemProductName.text = product.name
+            this.itemProductDescription.text = product.description
+            this.itemProductValue.text = convertBigDecimal(product)
         }
+    }
+
+    private fun convertBigDecimal(product: Product) = try {
+        product.value.toString()
+    }catch (e: Exception) {
+        "Erro"
     }
 
 }

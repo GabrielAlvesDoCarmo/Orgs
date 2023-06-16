@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dimensions_padding_form_16dp">16dp</dimen>
+    <dimen name="margin_input_form">8dp</dimen>
+    <dimen name="spacing_item_form_8dp">8dp</dimen>
+    <dimen name="dimens_fab_main">16dp</dimen>
+</resources>

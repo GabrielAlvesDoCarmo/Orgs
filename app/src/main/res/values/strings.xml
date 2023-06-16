@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Orgs</string>
+    <string name="input_label_name">Nome :</string>
+    <string name="input_label_description">Descriçao :</string>
+    <string name="input_label_value">Valor :</string>
+    <string name="input_btn_save">Salvar</string>
+    <string name="btn_add_description">Botao de adicionar</string>
 </resources>
