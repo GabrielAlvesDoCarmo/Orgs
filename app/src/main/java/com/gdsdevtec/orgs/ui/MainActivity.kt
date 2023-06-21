@@ -1,10 +1,11 @@
 package com.gdsdevtec.orgs.ui
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.gdsdevtec.orgs.dao.ProductDao
 import com.gdsdevtec.orgs.databinding.ActivityMainBinding
+import com.gdsdevtec.orgs.utils.ext.nextScreen
+import com.gdsdevtec.orgs.utils.ext.onClick
 
 class MainActivity : AppCompatActivity() {
     private val binding : ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -16,10 +17,8 @@ class MainActivity : AppCompatActivity() {
     }
     private fun bindingSetup() = binding.run {
         rvMain.adapter = productAdapter
-        mainFabAdd.setOnClickListener {
-            Intent(this@MainActivity, FormActivity::class.java).apply {
-                startActivity(this)
-            }
+        mainFabAdd.onClick{
+           nextScreen(FormActivity())
         }
     }
 

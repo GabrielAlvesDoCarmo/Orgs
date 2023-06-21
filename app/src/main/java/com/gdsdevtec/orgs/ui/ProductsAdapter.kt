@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
 import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
 
 class ProductsAdapter(
     listProducts: List<Product>
@@ -29,16 +30,10 @@ class ProductsAdapter(
         holder.binding.apply {
             this.itemProductName.text = product.name
             this.itemProductDescription.text = product.description
-            this.itemProductValue.text = convertBigDecimal(product)
+            this.itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
         }
     }
-
-    private fun convertBigDecimal(product: Product) = try {
-        product.value.toString()
-    } catch (e: Exception) {
-        "Erro"
-    }
-
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(products: List<Product>) {
         listProducts.clear()
         listProducts.addAll(products)

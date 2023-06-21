@@ -5,4 +5,5 @@
     <string name="input_label_value">Valor :</string>
     <string name="input_btn_save">Salvar</string>
     <string name="btn_add_description">Botao de adicionar</string>
+    <string name="new_product">Novo Produto</string>
 </resources>
