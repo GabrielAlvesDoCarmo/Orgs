@@ -6,4 +6,7 @@
     <string name="input_btn_save">Salvar</string>
     <string name="btn_add_description">Botao de adicionar</string>
     <string name="new_product">Novo Produto</string>
+    <string name="icon_name_description">icone do nome</string>
+    <string name="icon_description">Icone do campo descricao</string>
+    <string name="icon_value">icone do campo valor</string>
 </resources>
