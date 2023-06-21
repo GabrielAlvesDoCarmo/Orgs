@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
@@ -28,11 +30,22 @@ class ProductsAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = listProducts[position]
         holder.binding.apply {
-            this.itemProductName.text = product.name
-            this.itemProductDescription.text = product.description
-            this.itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
+            bindItemView(this,product)
         }
     }
+
+    private fun bindItemView(binding: ItemProductBinding, product: Product) = with(binding) {
+        itemProductName.text = product.name
+        itemProductDescription.text = product.description
+        itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
+        itemProductImage.load(getImageProduct(product.image))
+    }
+
+    private fun getImageProduct(image: String?): Any {
+        return if (image.isNullOrEmpty()) R.drawable.ic_not_image_default
+        else image
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(products: List<Product>) {
         listProducts.clear()

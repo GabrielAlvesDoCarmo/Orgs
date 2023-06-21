@@ -27,6 +27,8 @@
         android:backgroundTint="@android:color/holo_green_dark"
         app:icon="@drawable/ic_add"
         android:text="@string/new_product"
+        app:iconTint="@color/white"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textAllCaps="false"
