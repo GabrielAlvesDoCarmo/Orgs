@@ -5,4 +5,8 @@
     <dimen name="spacing_item_form_8dp">8dp</dimen>
     <dimen name="dimens_fab_main">16dp</dimen>
     <dimen name="spacing_radius_drawable_bg_item">8dp</dimen>
+
+
+    <dimen name="spacing_none">0dp</dimen>
+    <dimen name="margin_horizontal_text_field_form">16dp</dimen>
 </resources>

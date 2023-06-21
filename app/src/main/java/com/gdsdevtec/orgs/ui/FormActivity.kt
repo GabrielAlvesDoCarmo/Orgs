@@ -1,7 +1,9 @@
 package com.gdsdevtec.orgs.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.dao.ProductDao
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.model.Product
@@ -20,8 +22,22 @@ class FormActivity : AppCompatActivity() {
         setupActivity()
     }
 
-    private fun setupActivity() {
-        binding.inputBtnSave.onClick { saveProduct() }
+    private fun setupActivity() = with(binding){
+        inputBtnSave.onClick { saveProduct() }
+        formImageProduct.onClick { showDialogProduct() }
+
+    }
+
+    private fun showDialogProduct() {
+        AlertDialog.Builder(this)
+            .setView(R.layout.dialog_image_product)
+            .setPositiveButton(R.string.dialog_button_confirm){_,_->
+
+            }
+            .setNegativeButton(R.string.dialog_button_cancel){_,_->
+
+            }
+            .show()
     }
 
     private fun saveProduct() {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dialog_img"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:background="@android:color/darker_gray"
+            android:src="@drawable/ic_not_image_default"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/dialog_btn_search_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_dark"
+            android:text="@string/search_btn_dialog"
+            android:textColor="@color/white"
+            app:icon="@drawable/ic_refresh"
+            app:layout_constraintBottom_toBottomOf="@id/dialog_img"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_img" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_product_layout_name"
+            android:layout_width="@dimen/spacing_none"
+            android:layout_height="wrap_content"
+            android:hint="@string/input_label_url"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_search_img"
+            app:startIconContentDescription="@string/icon_url"
+            style="@style/TextInputLayoutDefault"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/dimensions_padding_form_16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_btn_search_img"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_product_edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
