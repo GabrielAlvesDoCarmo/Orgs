@@ -9,11 +9,11 @@ import coil.ImageLoader
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
-import com.gdsdevtec.orgs.utils.ext.loadingImage
+import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
 
 class ProductsAdapter(
     listProducts: List<Product>,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
 ) : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
     inner class ProductViewHolder(val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -45,7 +45,7 @@ class ProductsAdapter(
         val guidelinePercent = if (product.image == null) 0.0F else 0.3F
         itemProductImage.apply {
             visibility = isVisibility
-            loadingImage(product.image, imageLoader)
+            loadImageDataWithUrl(imageLoader, product.image)
         }
         guideline.setGuidelinePercent(guidelinePercent)
     }

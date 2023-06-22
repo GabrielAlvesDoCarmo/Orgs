@@ -31,18 +31,10 @@ fun BigDecimal.convertBigDecimalForCurrencyLocale(): String {
 }
 
 fun AppCompatImageView.loadImageDataWithUrl(imageLoader: ImageLoader,url : String?) {
-    scaleType = ImageView.ScaleType.CENTER_CROP
-    loadingImage(url, imageLoader)
-}
-
-fun AppCompatImageView.loadingImage(
-    url: String?,
-    imageLoader: ImageLoader
-) {
     load(url, imageLoader = imageLoader) {
         placeholder(R.drawable.playceholder)
-        fallback(R.drawable.ic_error_image_null)
-        error(R.drawable.ic_error_image_value)
+        fallback(R.drawable.error_load_image)
+        error(R.drawable.error_load_image)
     }
 }
 
