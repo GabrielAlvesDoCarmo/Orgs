@@ -19,30 +19,32 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-fun AppCompatActivity.nextScreen(activity: AppCompatActivity) = startActivity(Intent(this,activity::class.java))
+fun AppCompatActivity.nextScreen(activity: AppCompatActivity) =
+    startActivity(Intent(this, activity::class.java))
 
-fun AppCompatActivity.nextScreen(activity: AppCompatActivity, arguments : Pair<String,Parcelable> ) {
-    Intent(this,activity::class.java).apply {
-        putExtra(arguments.first,arguments.second)
+fun AppCompatActivity.nextScreen(activity: AppCompatActivity, arguments: Pair<String, Parcelable>) {
+    Intent(this, activity::class.java).apply {
+        putExtra(arguments.first, arguments.second)
         startActivity(this)
     }
 }
 
-fun AppCompatActivity.message(msg :String) = Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+fun AppCompatActivity.message(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
 
-inline fun<reified T> View.onClick(crossinline action : ()-> T) {
+inline fun <reified T> View.onClick(crossinline action: () -> T) {
     this.setOnClickListener { action.invoke() }
 }
+
 fun BigDecimal.convertBigDecimalForCurrencyLocale(): String {
     return try {
-        val currencyLocale= NumberFormat.getCurrencyInstance(Locale("pt", "br"))
+        val currencyLocale = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
         currencyLocale.format(this).toString()
-    }catch (e : Exception){
+    } catch (e: Exception) {
         "Erro"
     }
 }
 
-fun AppCompatImageView.loadImageDataWithUrl(imageLoader: ImageLoader,url : String?) {
+fun AppCompatImageView.loadImageDataWithUrl(imageLoader: ImageLoader, url: String?) {
     load(url, imageLoader = imageLoader) {
         placeholder(R.drawable.playceholder)
         fallback(R.drawable.error_load_image)
@@ -59,7 +61,8 @@ fun TextInputLayout.setLayoutError(isError: Boolean) = if (isError) {
     true
 }
 
-fun String.stringForBigDecimal(): BigDecimal =  if (this.isNotEmpty()) BigDecimal(this) else BigDecimal.ZERO
+fun String.stringForBigDecimal(): BigDecimal =
+    if (this.isNotEmpty()) BigDecimal(this) else BigDecimal.ZERO
 
 fun Long.millisecondsToDate(): String {
     return Instant
@@ -71,4 +74,20 @@ fun Long.millisecondsToDate(): String {
 
 fun LocalDate.formatDate(): String {
     return DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale("pt-br")).format(this).toString()
+}
+
+fun Int.formatTimer(): String {
+    return when (this) {
+        0 -> "00"
+        1 -> "01"
+        2 -> "02"
+        3 -> "03"
+        4 -> "04"
+        5 -> "05"
+        6 -> "06"
+        7 -> "07"
+        8 -> "08"
+        9 -> "09"
+        else -> "$this"
+    }
 }
