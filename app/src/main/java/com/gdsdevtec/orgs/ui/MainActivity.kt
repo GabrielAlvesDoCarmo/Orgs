@@ -17,12 +17,17 @@ class MainActivity : AppCompatActivity() {
         bindingSetup()
     }
     private fun bindingSetup() = binding.run {
-        productAdapter = ProductsAdapter(getProducts(),DialogUtils(this@MainActivity).imageLoader)
+        productAdapter = productsAdapter()
         rvMain.adapter = productAdapter
         mainFabAdd.onClick{
            nextScreen(FormActivity())
         }
     }
+
+    private fun productsAdapter() = ProductsAdapter(
+        listProducts = getProducts(),
+        imageLoader = DialogUtils(this@MainActivity).imageLoader,
+    )
 
     override fun onResume() {
         super.onResume()

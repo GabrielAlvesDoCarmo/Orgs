@@ -20,10 +20,11 @@ class DialogUtils(private val context: Context) {
             }
         }.build()
     fun showDialog(
+        urlDefault: String? = null,
         resultUrl : (String?)->Unit,
         negativeButton : ()->Unit = {}
     )  {
-        val binding = setupBindingDialog()
+        val binding = setupBindingDialog(urlDefault)
         AlertDialog.Builder(context)
             .setView(binding.root)
             .setPositiveButton(R.string.dialog_button_confirm) { _, _ ->
@@ -34,8 +35,12 @@ class DialogUtils(private val context: Context) {
             }
             .show()
     }
-    private fun setupBindingDialog(): DialogImageProductBinding {
+    private fun setupBindingDialog(urlDefault: String?): DialogImageProductBinding {
         return DialogImageProductBinding.inflate(LayoutInflater.from(context)).apply {
+            urlDefault?.let{
+                dialogImg.loadImageDataWithUrl(imageLoader, urlDefault)
+                inputProductImageUrl.setText(urlDefault)
+            }
             dialogBtnSearchImg.onClick {
                 if (validateDialogUrl(this)) setImageForm(this)
             }

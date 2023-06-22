@@ -28,6 +28,7 @@ class FormActivity : AppCompatActivity() {
         inputBtnSave.onClick { saveProduct() }
         formImageProduct.onClick {
             dialog.showDialog(
+                urlDefault = url,
                 resultUrl = { dialogUrl ->
                     url = dialogUrl
                     formImageProduct.loadImageDataWithUrl(dialog.imageLoader, url)

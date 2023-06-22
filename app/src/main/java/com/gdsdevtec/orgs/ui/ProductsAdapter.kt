@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.Guideline
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
@@ -41,13 +43,18 @@ class ProductsAdapter(
         itemProductName.text = product.name
         itemProductDescription.text = product.description
         itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
-        val isVisibility = if (product.image != null) View.VISIBLE else View.GONE
+        imageSetup(itemProductImage,product)
+        guidelineSetup(guideline,product)
+    }
+
+    private fun guidelineSetup(guideline: Guideline, product: Product) {
         val guidelinePercent = if (product.image == null) 0.0F else 0.3F
-        itemProductImage.apply {
-            visibility = isVisibility
-            loadImageDataWithUrl(imageLoader, product.image)
-        }
         guideline.setGuidelinePercent(guidelinePercent)
+    }
+
+    private fun imageSetup(image: AppCompatImageView, product: Product) {
+        image.visibility = if (product.image != null) View.VISIBLE else View.GONE
+        image.loadImageDataWithUrl(imageLoader, product.image)
     }
 
     @SuppressLint("NotifyDataSetChanged")
