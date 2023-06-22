@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
+    <!-- TODO    Colocar opcao de tirar uma foto ou pegar da galeria pro orgs app bar-->
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/app_bar_orgs_default" />
 
-        <!-- TODO    Colocar opcao de tirar uma foto ou pegar da galeria pro orgs app bar-->
-        <include
-            android:id="@+id/include_toolbar"
-            layout="@layout/app_bar_orgs_default" />
-
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:listitem="@layout/item_product" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/main_fab_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="@string/btn_add_description"
-            android:text="@string/new_product"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:icon="@drawable/ic_add"
-            app:iconTint="@color/white" />
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/main_fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/btn_add_description"
+        android:text="@string/new_product"
+        android:textAllCaps="false"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/white"
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/white" />
 
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
