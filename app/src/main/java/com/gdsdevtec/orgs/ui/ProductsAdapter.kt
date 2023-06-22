@@ -12,10 +12,12 @@ import com.gdsdevtec.orgs.databinding.ItemProductBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
+import com.gdsdevtec.orgs.utils.ext.onClick
 
 class ProductsAdapter(
     listProducts: List<Product>,
     private val imageLoader: ImageLoader,
+    private val itemSelected: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
     inner class ProductViewHolder(val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -36,6 +38,7 @@ class ProductsAdapter(
         val product = listProducts[position]
         holder.binding.apply {
             bindItemView(this, product)
+            root.onClick { itemSelected.invoke(product) }
         }
     }
 
@@ -43,8 +46,8 @@ class ProductsAdapter(
         itemProductName.text = product.name
         itemProductDescription.text = product.description
         itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
-        imageSetup(itemProductImage,product)
-        guidelineSetup(guideline,product)
+        imageSetup(itemProductImage, product)
+        guidelineSetup(guideline, product)
     }
 
     private fun guidelineSetup(guideline: Guideline, product: Product) {

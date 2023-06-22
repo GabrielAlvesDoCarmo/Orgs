@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity() {
     private fun productsAdapter() = ProductsAdapter(
         listProducts = getProducts(),
         imageLoader = DialogUtils(this@MainActivity).imageLoader,
+        itemSelected = {itemSelected->
+            nextScreen(DetailsProductActivity(),Pair("PRODUCT",itemSelected))
+        },
+
     )
 
     override fun onResume() {

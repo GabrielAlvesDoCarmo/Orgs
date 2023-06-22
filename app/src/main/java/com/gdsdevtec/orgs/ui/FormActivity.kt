@@ -9,7 +9,7 @@ import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
 import com.gdsdevtec.orgs.utils.ext.onClick
 import com.gdsdevtec.orgs.utils.ext.setLayoutError
-import java.math.BigDecimal
+import com.gdsdevtec.orgs.utils.ext.stringForBigDecimal
 
 class FormActivity : AppCompatActivity() {
     private val binding: ActivityFormBinding by lazy {
@@ -57,8 +57,7 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun validateValue() = binding.run {
-        val value = inputProductEditValue.text.toString()
-        return@run if (value.isNotEmpty()) BigDecimal(value) else BigDecimal.ZERO
+        inputProductEditValue.text.toString().stringForBigDecimal()
     }
 
     private fun validateDescription() = binding.run {
