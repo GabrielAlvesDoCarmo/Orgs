@@ -7,9 +7,12 @@ import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
+import com.gdsdevtec.orgs.utils.ext.millisecondsToDate
 import com.gdsdevtec.orgs.utils.ext.onClick
 import com.gdsdevtec.orgs.utils.ext.setLayoutError
 import com.gdsdevtec.orgs.utils.ext.stringForBigDecimal
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
 
 class FormActivity : AppCompatActivity() {
     private val binding: ActivityFormBinding by lazy {
@@ -35,11 +38,46 @@ class FormActivity : AppCompatActivity() {
                 }
             )
         }
+        inputProductEditDate.onClick {
+            selectedDateEvent()
+        }
+        inputProductEditHour.onClick {
+            selectedTimeEvent()
+        }
+    }
+
+    private fun selectedTimeEvent() {
+        val timePicker = MaterialTimePicker
+            .Builder()
+            .setTitleText("Selecione um horário")
+            .setHour(4)
+            .setMinute(20)
+            .build()
+        timePicker.show(supportFragmentManager, "TIME_PICKER")
+        timePicker.addOnPositiveButtonClickListener {
+            val timer = "${timePicker.hour}:${timePicker.minute}"
+            binding.inputProductEditHour.setText(timer)
+        }
+    }
+
+    private fun selectedDateEvent() {
+//        TODO colocar o data range
+        MaterialDatePicker.Builder.datePicker().setTitleText("Seleciona a data do evento").build().apply {
+            addOnPositiveButtonClickListener {milliseconds->
+                binding.inputProductEditDate.setText(milliseconds.millisecondsToDate())
+            }
+        }.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
+
+
     }
 
     private fun saveProduct() {
-        val isValidForm = validateName() && validateDescription()
+        val isValidForm = validateName() && validateDescription() && validationDate()
         if (isValidForm) generateProduct()
+    }
+
+    private fun validationDate(): Boolean {
+        return true
     }
 
     private fun generateProduct() {

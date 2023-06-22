@@ -14,4 +14,9 @@
     <string name="input_label_url">Url</string>
     <string name="dialog_button_confirm">Confirmar</string>
     <string name="dialog_button_cancel">Cancelar</string>
+    <string name="input_label_date">Data :</string>
+    <string name="icon_date">Icone de data</string>
+    <string name="selected_date">Selecionar data</string>
+    <string name="input_label_hour">Hora :</string>
+    <string name="icon_hour">iconde de hora</string>
 </resources>

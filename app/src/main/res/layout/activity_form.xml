@@ -83,6 +83,51 @@
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_product_layout_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
+            app:startIconDrawable="@drawable/ic_calendar"
+            app:startIconContentDescription="@string/icon_date"
+            android:visibility="visible"
+            android:focusable="false"
+            style="@style/TextInputLayoutDefault"
+            android:hint="@string/input_label_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_product_layout_value">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_product_edit_date"
+                android:inputType="date"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_product_layout_hours"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
+            app:startIconDrawable="@drawable/ic_timer"
+            app:startIconContentDescription="@string/icon_hour"
+            android:visibility="visible"
+            android:focusable="true"
+            style="@style/TextInputLayoutDefault"
+            android:hint="@string/input_label_hour"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_product_layout_date">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_product_edit_hour"
+                android:inputType="time"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/input_btn_save"
@@ -90,12 +135,13 @@
             android:layout_height="wrap_content"
             android:background="@android:color/holo_green_dark"
             android:layout_marginTop="16dp"
+            android:textAllCaps="false"
             android:text="@string/input_btn_save"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_product_layout_value"
+            app:layout_constraintTop_toBottomOf="@+id/input_product_layout_hours"
             app:layout_constraintVertical_bias="1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

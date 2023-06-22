@@ -12,6 +12,11 @@ import com.gdsdevtec.orgs.R
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 fun AppCompatActivity.nextScreen(activity: AppCompatActivity) = startActivity(Intent(this,activity::class.java))
@@ -55,3 +60,15 @@ fun TextInputLayout.setLayoutError(isError: Boolean) = if (isError) {
 }
 
 fun String.stringForBigDecimal(): BigDecimal =  if (this.isNotEmpty()) BigDecimal(this) else BigDecimal.ZERO
+
+fun Long.millisecondsToDate(): String {
+    return Instant
+        .ofEpochMilli(this)
+        .atZone(ZoneId.of("America/Sao_Paulo"))
+        .withZoneSameInstant(ZoneId.ofOffset("UTC", ZoneOffset.UTC))
+        .toLocalDate().formatDate()
+}
+
+fun LocalDate.formatDate(): String {
+    return DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale("pt-br")).format(this).toString()
+}
