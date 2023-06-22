@@ -9,4 +9,5 @@
 
     <dimen name="spacing_none">0dp</dimen>
     <dimen name="margin_horizontal_text_field_form">16dp</dimen>
+    <dimen name="radius_bg_details_product_25dp">25dp</dimen>
 </resources>
