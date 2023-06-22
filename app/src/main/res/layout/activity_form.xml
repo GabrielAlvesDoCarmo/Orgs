@@ -89,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/holo_green_dark"
+            android:layout_marginTop="16dp"
             android:text="@string/input_btn_save"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
