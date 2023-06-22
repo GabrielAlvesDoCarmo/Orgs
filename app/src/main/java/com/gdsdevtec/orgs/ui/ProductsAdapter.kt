@@ -49,6 +49,7 @@ class ProductsAdapter(
             load(product.image, imageLoader = imageLoader){
                 fallback(R.drawable.ic_error_image_null)
                 error(R.drawable.ic_error_image_value)
+                placeholder(R.drawable.playceholder)
             }
         }
         guideline.setGuidelinePercent(guidelinePercent)

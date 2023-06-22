@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import coil.load
 import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.dao.ProductDao
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.databinding.DialogImageProductBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
+import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
 import com.gdsdevtec.orgs.utils.ext.onClick
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
@@ -54,16 +54,8 @@ class FormActivity : AppCompatActivity() {
         }
     }
     private fun setImageForm(dialog: DialogImageProductBinding) = with(dialog){
-        url = inputProductImageUrl.text.toString()
-        dialogImg.apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            load(url, imageLoader = DialogUtils.getImageLoader(this@FormActivity)){
-                fallback(R.drawable.ic_error_image_null)
-                error(R.drawable.ic_error_image_value).apply {
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                }
-            }
-        }
+        url =inputProductImageUrl.text.toString()
+        dialogImg.loadImageDataWithUrl(getImageLoader(),url)
     }
 
     private fun dialogConfirmClick(dialogBinding: DialogImageProductBinding) {
@@ -71,15 +63,7 @@ class FormActivity : AppCompatActivity() {
             return
         }else{
             setLayoutError(false,dialogBinding.inputProductLayoutImageUrl)
-            binding.formImageProduct.apply {
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                load(dialogBinding.inputProductImageUrl.text.toString(), imageLoader = DialogUtils.getImageLoader(this@FormActivity)){
-                    fallback(R.drawable.ic_error_image_null)
-                    error(R.drawable.ic_error_image_value).apply {
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                    }
-                }
-            }
+            binding.formImageProduct.loadImageDataWithUrl(getImageLoader(),url)
         }
     }
 
@@ -145,7 +129,6 @@ class FormActivity : AppCompatActivity() {
         layout.isErrorEnabled = false
         true
     }
-
+    private fun getImageLoader() =  DialogUtils.getImageLoader(this)
 }
 
-//"https://minhasaude.proteste.org.br/wp-content/uploads/2022/10/muitas-laranjas.png.webp"
