@@ -10,6 +10,7 @@ import com.gdsdevtec.orgs.dao.ProductDao
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.databinding.DialogImageProductBinding
 import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.onClick
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
@@ -28,7 +29,6 @@ class FormActivity : AppCompatActivity() {
     private fun setupActivity() = with(binding) {
         inputBtnSave.onClick { saveProduct() }
         formImageProduct.onClick { showDialogProduct() }
-
     }
 
     private fun showDialogProduct() {
@@ -43,19 +43,6 @@ class FormActivity : AppCompatActivity() {
             }
             .show()
     }
-
-    private fun dialogConfirmClick(dialogBinding: DialogImageProductBinding) {
-        if (dialogBinding.inputProductImageUrl.text.isNullOrEmpty()){
-            return
-        }else{
-            setLayoutError(false,dialogBinding.inputProductLayoutImageUrl)
-            binding.formImageProduct.apply {
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                load(dialogBinding.inputProductImageUrl.text.toString())
-            }
-        }
-    }
-
     private fun setupBindingDialog(): DialogImageProductBinding {
         return DialogImageProductBinding.inflate(layoutInflater).apply {
             dialogBtnSearchImg.onClick {
@@ -66,6 +53,36 @@ class FormActivity : AppCompatActivity() {
             }
         }
     }
+    private fun setImageForm(dialog: DialogImageProductBinding) = with(dialog){
+        url = inputProductImageUrl.text.toString()
+        dialogImg.apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            load(url, imageLoader = DialogUtils.getImageLoader(this@FormActivity)){
+                fallback(R.drawable.ic_error_image_null)
+                error(R.drawable.ic_error_image_value).apply {
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                }
+            }
+        }
+    }
+
+    private fun dialogConfirmClick(dialogBinding: DialogImageProductBinding) {
+        if (dialogBinding.inputProductImageUrl.text.isNullOrEmpty()){
+            return
+        }else{
+            setLayoutError(false,dialogBinding.inputProductLayoutImageUrl)
+            binding.formImageProduct.apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                load(dialogBinding.inputProductImageUrl.text.toString(), imageLoader = DialogUtils.getImageLoader(this@FormActivity)){
+                    fallback(R.drawable.ic_error_image_null)
+                    error(R.drawable.ic_error_image_value).apply {
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun clickEndIconUrlDialog(dialog: DialogImageProductBinding) = with(dialog){
         inputProductImageUrl.text?.clear()
@@ -73,11 +90,6 @@ class FormActivity : AppCompatActivity() {
         dialogImg.setImageResource(R.drawable.ic_not_image_default)
     }
 
-    private fun setImageForm(dialog: DialogImageProductBinding) = with(dialog){
-        url = inputProductImageUrl.text.toString()
-        dialogImg.scaleType = ImageView.ScaleType.CENTER_CROP
-        dialogImg.load(url)
-    }
 
     private fun validateDialogUrl(dialog: DialogImageProductBinding) = with(dialog) {
         val url = inputProductImageUrl.text.toString()
@@ -133,6 +145,7 @@ class FormActivity : AppCompatActivity() {
         layout.isErrorEnabled = false
         true
     }
+
 }
 
 //"https://minhasaude.proteste.org.br/wp-content/uploads/2022/10/muitas-laranjas.png.webp"

@@ -2,8 +2,10 @@ package com.gdsdevtec.orgs.ui
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 import coil.load
 import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
@@ -11,12 +13,14 @@ import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
 
 class ProductsAdapter(
-    listProducts: List<Product>
+    listProducts: List<Product>,
+    private val imageLoader: ImageLoader
 ) : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
     inner class ProductViewHolder(val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     private val listProducts = listProducts.toMutableList()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return ProductViewHolder(
             ItemProductBinding.inflate(
@@ -38,12 +42,16 @@ class ProductsAdapter(
         itemProductName.text = product.name
         itemProductDescription.text = product.description
         itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
-        itemProductImage.load(getImageProduct(product.image))
-    }
-
-    private fun getImageProduct(image: String?): Any {
-        return if (image.isNullOrEmpty()) R.drawable.ic_not_image_default
-        else image
+        val isVisibility = if (product.image != null) View.VISIBLE else View.GONE
+        val guidelinePercent = if (product.image == null) 0.0F else 0.3F
+        itemProductImage.apply {
+            visibility = isVisibility
+            load(product.image, imageLoader = imageLoader){
+                fallback(R.drawable.ic_error_image_null)
+                error(R.drawable.ic_error_image_value)
+            }
+        }
+        guideline.setGuidelinePercent(guidelinePercent)
     }
 
     @SuppressLint("NotifyDataSetChanged")

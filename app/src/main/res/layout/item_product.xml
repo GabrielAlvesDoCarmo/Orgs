@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toTopOf="@id/item_product_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/item_product_image"
-            app:layout_constraintTop_toTopOf="@+id/item_product_image"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Nome" />
 
         <androidx.appcompat.widget.AppCompatTextView

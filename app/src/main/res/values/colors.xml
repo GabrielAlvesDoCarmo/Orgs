@@ -10,4 +10,5 @@
 
     <color name="default_color">@android:color/holo_green_dark</color>
     <color name="btn_clear_text_form">@android:color/holo_red_dark</color>
+    <color name="error_icon_image">#F44336</color>
 </resources>
