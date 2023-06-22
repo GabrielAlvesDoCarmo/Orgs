@@ -1,5 +1,6 @@
 package com.gdsdevtec.orgs.ui
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gdsdevtec.orgs.dao.ProductDao
@@ -13,6 +14,10 @@ import com.gdsdevtec.orgs.utils.ext.setLayoutError
 import com.gdsdevtec.orgs.utils.ext.stringForBigDecimal
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
+import com.google.android.material.timepicker.TimeFormat
+import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+
 
 class FormActivity : AppCompatActivity() {
     private val binding: ActivityFormBinding by lazy {
@@ -40,7 +45,7 @@ class FormActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDialogImageProduct() = with(binding){
+    private fun showDialogImageProduct() = with(binding) {
         dialog.showDialog(
             urlDefault = url,
             resultUrl = { dialogUrl ->
@@ -53,9 +58,11 @@ class FormActivity : AppCompatActivity() {
     private fun selectedTimeEvent() {
         val timePicker = MaterialTimePicker
             .Builder()
+            .setTimeFormat(CLOCK_24H)
+            .setInputMode(INPUT_MODE_CLOCK)
             .setTitleText("Selecione um horário")
-            .setHour(4)
-            .setMinute(20)
+            .setHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
+            .setMinute(Calendar.getInstance().get(Calendar.MINUTE))
             .build()
         timePicker.show(supportFragmentManager, "TIME_PICKER")
         timePicker.addOnPositiveButtonClickListener {
@@ -66,14 +73,16 @@ class FormActivity : AppCompatActivity() {
 
     private fun selectedDateEvent() {
 //        TODO colocar o data range
-        MaterialDatePicker.Builder.datePicker().setTitleText("Seleciona a data do evento").build()
-            .apply {
-                addOnPositiveButtonClickListener { milliseconds ->
-                    binding.inputProductEditDate.setText(milliseconds.millisecondsToDate())
-                }
-            }.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
-
-
+        val materialDatePicker = MaterialDatePicker
+            .Builder
+            .datePicker()
+            .setTitleText("Seleciona a data do evento")
+            .setSelection(System.currentTimeMillis())
+            .build()
+        materialDatePicker.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
+        materialDatePicker.addOnPositiveButtonClickListener {milliseconds->
+            binding.inputProductEditDate.setText(milliseconds.millisecondsToDate())
+        }
     }
 
     private fun saveProduct() {

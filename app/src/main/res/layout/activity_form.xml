@@ -79,6 +79,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_product_edit_value"
                 android:inputType="numberDecimal"
+                android:maxLength="30"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
