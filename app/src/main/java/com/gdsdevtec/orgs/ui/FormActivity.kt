@@ -30,13 +30,7 @@ class FormActivity : AppCompatActivity() {
         dialog = DialogUtils(this@FormActivity)
         inputBtnSave.onClick { saveProduct() }
         formImageProduct.onClick {
-            dialog.showDialog(
-                urlDefault = url,
-                resultUrl = { dialogUrl ->
-                    url = dialogUrl
-                    formImageProduct.loadImageDataWithUrl(dialog.imageLoader, url)
-                }
-            )
+            showDialogImageProduct()
         }
         inputProductEditDate.onClick {
             selectedDateEvent()
@@ -44,6 +38,16 @@ class FormActivity : AppCompatActivity() {
         inputProductEditHour.onClick {
             selectedTimeEvent()
         }
+    }
+
+    private fun showDialogImageProduct() = with(binding){
+        dialog.showDialog(
+            urlDefault = url,
+            resultUrl = { dialogUrl ->
+                url = dialogUrl
+                formImageProduct.loadImageDataWithUrl(dialog.imageLoader, url)
+            }
+        )
     }
 
     private fun selectedTimeEvent() {
@@ -62,22 +66,20 @@ class FormActivity : AppCompatActivity() {
 
     private fun selectedDateEvent() {
 //        TODO colocar o data range
-        MaterialDatePicker.Builder.datePicker().setTitleText("Seleciona a data do evento").build().apply {
-            addOnPositiveButtonClickListener {milliseconds->
-                binding.inputProductEditDate.setText(milliseconds.millisecondsToDate())
-            }
-        }.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
+        MaterialDatePicker.Builder.datePicker().setTitleText("Seleciona a data do evento").build()
+            .apply {
+                addOnPositiveButtonClickListener { milliseconds ->
+                    binding.inputProductEditDate.setText(milliseconds.millisecondsToDate())
+                }
+            }.show(supportFragmentManager, "MATERIAL_DATE_PICKER")
 
 
     }
 
     private fun saveProduct() {
-        val isValidForm = validateName() && validateDescription() && validationDate()
+        val isValidForm =
+            validateName() && validateDescription() && validationDate() && validateTime()
         if (isValidForm) generateProduct()
-    }
-
-    private fun validationDate(): Boolean {
-        return true
     }
 
     private fun generateProduct() {
@@ -90,12 +92,26 @@ class FormActivity : AppCompatActivity() {
             name = inputProductEditName.text.toString(),
             description = inputProductEditDescription.text.toString(),
             value = validateValue(),
-            image = url
+            image = url,
+            date = inputProductEditDate.text.toString(),
+            time = inputProductEditHour.text.toString(),
         )
     }
 
     private fun validateValue() = binding.run {
         inputProductEditValue.text.toString().stringForBigDecimal()
+    }
+
+    private fun validateTime(): Boolean = binding.run {
+        val time = inputProductEditHour.text.toString()
+        return if (time.isEmpty()) inputProductLayoutHours.setLayoutError(true)
+        else inputProductLayoutHours.setLayoutError(false)
+    }
+
+    private fun validationDate(): Boolean = binding.run {
+        val date = inputProductEditDate.text.toString()
+        return if (date.isEmpty()) inputProductLayoutDate.setLayoutError(true)
+        else inputProductLayoutDate.setLayoutError(false)
     }
 
     private fun validateDescription() = binding.run {

@@ -46,6 +46,8 @@ class ProductsAdapter(
         itemProductName.text = product.name
         itemProductDescription.text = product.description
         itemProductValue.text = product.value.convertBigDecimalForCurrencyLocale()
+        itemDateEvent.text = product.date
+        itemTimeEvent.text = product.time
         imageSetup(itemProductImage, product)
         guidelineSetup(guideline, product)
     }
