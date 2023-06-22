@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         bindingSetup()
     }
     private fun bindingSetup() = binding.run {
-        productAdapter = ProductsAdapter(getProducts(),DialogUtils.getImageLoader(this@MainActivity))
+        productAdapter = ProductsAdapter(getProducts(),DialogUtils(this@MainActivity).imageLoader)
         rvMain.adapter = productAdapter
         mainFabAdd.onClick{
            nextScreen(FormActivity())

@@ -6,11 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import coil.load
-import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
+import com.gdsdevtec.orgs.utils.ext.loadingImage
 
 class ProductsAdapter(
     listProducts: List<Product>,
@@ -34,7 +33,7 @@ class ProductsAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = listProducts[position]
         holder.binding.apply {
-            bindItemView(this,product)
+            bindItemView(this, product)
         }
     }
 
@@ -46,11 +45,7 @@ class ProductsAdapter(
         val guidelinePercent = if (product.image == null) 0.0F else 0.3F
         itemProductImage.apply {
             visibility = isVisibility
-            load(product.image, imageLoader = imageLoader){
-                fallback(R.drawable.ic_error_image_null)
-                error(R.drawable.ic_error_image_value)
-                placeholder(R.drawable.playceholder)
-            }
+            loadingImage(product.image, imageLoader)
         }
         guideline.setGuidelinePercent(guidelinePercent)
     }
