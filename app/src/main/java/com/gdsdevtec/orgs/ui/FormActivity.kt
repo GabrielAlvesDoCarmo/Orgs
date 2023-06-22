@@ -1,10 +1,7 @@
 package com.gdsdevtec.orgs.ui
 
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import coil.imageLoader
-import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.dao.ProductDao
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.model.Product
@@ -33,13 +30,7 @@ class FormActivity : AppCompatActivity() {
             dialog.showDialog(
                 resultUrl = { dialogUrl ->
                     url = dialogUrl
-                    formImageProduct.loadImageDataWithUrl(imageLoader, url)
-                },
-                negativeButton = {
-                    formImageProduct.run {
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        setImageResource(R.drawable.ic_not_image_default)
-                    }
+                    formImageProduct.loadImageDataWithUrl(dialog.imageLoader, url)
                 }
             )
         }

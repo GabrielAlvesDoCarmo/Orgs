@@ -3,7 +3,6 @@ package com.gdsdevtec.orgs.utils.ext
 import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import coil.ImageLoader
 import coil.decode.GifDecoder
@@ -62,8 +61,7 @@ class DialogUtils(private val context: Context) {
     }
     private fun clickEndIconUrlDialog(binding: DialogImageProductBinding) = binding.apply{
         inputProductImageUrl.text?.clear()
-        dialogImg.scaleType = ImageView.ScaleType.FIT_CENTER
-        dialogImg.setImageResource(R.drawable.ic_not_image_default)
+        dialogImg.setImageResource(R.drawable.image_default)
     }
 
 
