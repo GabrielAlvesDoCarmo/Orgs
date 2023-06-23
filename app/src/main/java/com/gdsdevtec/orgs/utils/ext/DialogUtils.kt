@@ -7,6 +7,8 @@ import androidx.appcompat.app.AlertDialog
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.flask.colorpicker.ColorPickerView
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.DialogImageProductBinding
 
@@ -20,21 +22,47 @@ class DialogUtils(private val context: Context) {
             }
         }.build()
 
+    fun colorDialog(
+        titleDialogColor: String,
+        actionPositiveButton: (selectedColor: Int) -> Unit,
+        actionNegativeButton: (() -> Unit?)? = null
+    ) {
+        ColorPickerDialogBuilder
+            .with(context)
+            .setTitle(titleDialogColor)
+            .initialColor(R.color.default_color)
+            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+            .setPositiveButton(R.string.dialog_button_confirm) { _, selectedColor, _ ->
+                actionPositiveButton(selectedColor)
+            }
+            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
+                actionNegativeButton?.invoke()
+            }
+            .build()
+            .show()
+
+    }
 
     fun showDialog(
-        textPositiveButton : String? = null,
-        textNegativeButton : String? = null,
-        title : String,
+        title: String,
+        message: String,
+        textPositiveButton: String? = null,
+        textNegativeButton: String? = null,
         positiveButton: () -> Unit,
-        negativeButton: () -> Unit
+        negativeButton: (() -> Unit)? = null
     ) {
         AlertDialog.Builder(context)
             .setTitle(title)
-            .setPositiveButton(textPositiveButton ?:  context.getString(R.string.dialog_button_confirm)) { _, _ ->
+            .setMessage(message)
+            .setPositiveButton(
+                textPositiveButton ?: context.getString(R.string.dialog_button_confirm)
+            ) { _, _ ->
                 positiveButton()
             }
-            .setNegativeButton(textNegativeButton ?:  context.getString(R.string.dialog_button_cancel)) { _, _ ->
-                negativeButton()
+            .setNegativeButton(
+                textNegativeButton ?: context.getString(R.string.dialog_button_cancel)
+            ) { _, _ ->
+                negativeButton?.invoke() ?: return@setNegativeButton
             }
             .show()
     }
