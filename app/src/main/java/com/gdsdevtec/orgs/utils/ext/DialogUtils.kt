@@ -11,7 +11,7 @@ import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.DialogImageProductBinding
 
 class DialogUtils(private val context: Context) {
-    val imageLoader :ImageLoader = ImageLoader.Builder(context)
+    val imageLoader: ImageLoader = ImageLoader.Builder(context)
         .components {
             if (Build.VERSION.SDK_INT >= 28) {
                 add(ImageDecoderDecoder.Factory())
@@ -19,11 +19,31 @@ class DialogUtils(private val context: Context) {
                 add(GifDecoder.Factory())
             }
         }.build()
+
+
+    fun showDialog(
+        textPositiveButton : String? = null,
+        textNegativeButton : String? = null,
+        title : String,
+        positiveButton: () -> Unit,
+        negativeButton: () -> Unit
+    ) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setPositiveButton(textPositiveButton ?:  context.getString(R.string.dialog_button_confirm)) { _, _ ->
+                positiveButton()
+            }
+            .setNegativeButton(textNegativeButton ?:  context.getString(R.string.dialog_button_cancel)) { _, _ ->
+                negativeButton()
+            }
+            .show()
+    }
+
     fun showDialog(
         urlDefault: String? = null,
-        resultUrl : (String?)->Unit,
-        negativeButton : ()->Unit = {}
-    )  {
+        resultUrl: (String?) -> Unit,
+        negativeButton: () -> Unit = {}
+    ) {
         val binding = setupBindingDialog(urlDefault)
         AlertDialog.Builder(context)
             .setView(binding.root)
@@ -35,9 +55,10 @@ class DialogUtils(private val context: Context) {
             }
             .show()
     }
+
     private fun setupBindingDialog(urlDefault: String?): DialogImageProductBinding {
         return DialogImageProductBinding.inflate(LayoutInflater.from(context)).apply {
-            urlDefault?.let{
+            urlDefault?.let {
                 dialogImg.loadImageDataWithUrl(imageLoader, urlDefault)
                 inputProductImageUrl.setText(urlDefault)
             }
@@ -58,23 +79,26 @@ class DialogUtils(private val context: Context) {
         }
     }
 
-    private fun setImageForm(binding: DialogImageProductBinding)  = binding.apply{
+    private fun setImageForm(binding: DialogImageProductBinding) = binding.apply {
         dialogImg.loadImageDataWithUrl(
             imageLoader = imageLoader,
             url = inputProductImageUrl.text.toString()
         )
     }
-    private fun clickEndIconUrlDialog(binding: DialogImageProductBinding) = binding.apply{
+
+    private fun clickEndIconUrlDialog(binding: DialogImageProductBinding) = binding.apply {
         inputProductImageUrl.text?.clear()
         dialogImg.setImageResource(R.drawable.image_default)
     }
 
 
-
-    private fun dialogConfirmClick(binding: DialogImageProductBinding,resultUrl: (String?) -> Unit) = binding.apply {
-        if (inputProductImageUrl.text.isNullOrEmpty()){
+    private fun dialogConfirmClick(
+        binding: DialogImageProductBinding,
+        resultUrl: (String?) -> Unit
+    ) = binding.apply {
+        if (inputProductImageUrl.text.isNullOrEmpty()) {
             return@apply
-        }else{
+        } else {
             inputProductLayoutImageUrl.setLayoutError(false)
             resultUrl(inputProductImageUrl.text.toString())
         }
