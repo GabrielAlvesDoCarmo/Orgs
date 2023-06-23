@@ -1,7 +1,9 @@
 package com.gdsdevtec.orgs.ui
 
+import OrgsPreferences
 import android.Manifest
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +18,7 @@ import com.gdsdevtec.orgs.utils.ext.onClick
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val preferences by lazy { OrgsPreferences.getInstance(this) }
     private lateinit var productAdapter: ProductsAdapter
     private val requestCamera = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -25,10 +28,13 @@ class MainActivity : AppCompatActivity() {
 
     private val launchCam = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {
+    ) {result->
+        if (result.resultCode == RESULT_OK) {
+            val img = result.data?.extras?.get("data") as? Bitmap
+            if (img != null) binding.includeToolbar.appBarImageView.setImageBitmap(img)
 
+        }
     }
-
     private lateinit var dialogUtils: DialogUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             titleDialogColor = "Selecione a cor da status Bar",
             actionPositiveButton = {newColorStatusBar->
                 window.statusBarColor = newColorStatusBar
+                preferences.saveColorStatusBar(newColorStatusBar)
                 showDialogChangeAppBar()
             },
             actionNegativeButton = {
@@ -96,6 +103,8 @@ class MainActivity : AppCompatActivity() {
                 binding.includeToolbar.apply {
                     appBarImageView.isVisible = false
                     appbarContainer.setBackgroundColor(newColorAppBar)
+                    OrgsPreferences(this@MainActivity).saveColorAppBar(newColorAppBar)
+
                 }
                 showDialogColorFAB()
             },
@@ -110,6 +119,8 @@ class MainActivity : AppCompatActivity() {
             titleDialogColor = "Selecione a Cor do botao",
             actionPositiveButton = {newColorFab->
                 binding.mainFabAdd.setBackgroundColor(newColorFab)
+                preferences.saveColorBtn(newColorFab)
+
                 showDialogColorLetters()
             },
             actionNegativeButton = {
@@ -124,6 +135,7 @@ class MainActivity : AppCompatActivity() {
             actionPositiveButton = {newColorLetters->
                 binding.includeToolbar.collapsingToolbarLayout.setExpandedTitleColor(newColorLetters)
                 binding.mainFabAdd.setTextColor(newColorLetters)
+                preferences.saveColorLetters(newColorLetters)
                 showBackGroundApp()
             },
             actionNegativeButton = {
@@ -137,6 +149,8 @@ class MainActivity : AppCompatActivity() {
             titleDialogColor = "Selecione a Cor de fundo",
             actionPositiveButton = {newBackgroundColor->
                 binding.containerRootActivityMain.setBackgroundColor(newBackgroundColor)
+                preferences.saveColorBackground(newBackgroundColor)
+
             },
             actionNegativeButton = {
                 showDialogColorLetters()
