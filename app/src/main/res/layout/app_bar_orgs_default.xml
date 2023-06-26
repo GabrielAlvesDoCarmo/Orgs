@@ -21,6 +21,7 @@
             android:scaleType="centerCrop" />
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            app:navigationIcon="@drawable/ic_back_app_bar"
             app:menu="@menu/menu_list_main"
             android:layout_gravity="bottom"
             android:layout_width="match_parent"

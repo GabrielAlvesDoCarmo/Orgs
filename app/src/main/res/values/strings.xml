@@ -34,4 +34,18 @@
     <string name="selecione_a_cor_do_botao">Selecione a Cor do botao</string>
     <string name="selecione_a_cor_das_letras">Selecione a Cor das letras</string>
     <string name="selecione_a_cor_de_fundo">Selecione a Cor de fundo</string>
+    <string name="ordenar">Ordenar</string>
+    <string name="nome_desc">Nome Desc</string>
+    <string name="nome_asc">Nome Asc</string>
+    <string name="descicao_desc">Descicao Desc</string>
+    <string name="descicao_asc">Descicao Asc</string>
+    <string name="valor_desc">Valor Desc</string>
+    <string name="valor_asc">Valor Asc</string>
+    <string name="data_desc">Data Desc</string>
+    <string name="data_asc">Data Asc</string>
+    <string name="hora_desc">Hora Desc</string>
+    <string name="hora_asc">Hora Asc</string>
+    <string name="sem_ordem">Sem ordem</string>
+    <string name="color_app">Color App</string>
+    <string name="tirar_uma_foto">Tirar uma foto</string>
 </resources>

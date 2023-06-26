@@ -2,10 +2,12 @@ package com.gdsdevtec.orgs.ui
 
 import OrgsPreferences
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
@@ -13,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.gdsdevtec.orgs.R
@@ -64,8 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindingSetup() = binding.run {
         dialogUtils = DialogUtils(this@MainActivity)
-        setupOrderMenu()
-
+        setupAppBar()
         productAdapter = productsAdapter()
         rvMain.adapter = productAdapter
         mainFabAdd.onClick {
@@ -77,16 +77,13 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
-    private fun setupOrderMenu() {
-        val menu = binding.includeToolbar.toolbar.menu
-        menu.forEach {menuItem->
-                menuItem.icon?.let {icon->
-                val drawable = icon.mutate()
-                drawable.setTint(ContextCompat.getColor(this, R.color.color_primary_variant))
-                menuItem.icon = drawable
-            }
+    private fun setupAppBar() = with(binding.includeToolbar.toolbar) {
+        changeIconsAppBarColor(menu,getColor(R.color.color_primary_variant) )
+        navigationIcon?.setTint(getColor(R.color.color_primary_variant))
+        setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
-        binding.includeToolbar.toolbar.setOnMenuItemClickListener { menuItem ->
+        setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_name_desc -> {
                     allProducts = allProducts.sortedByDescending { it.name }
@@ -161,6 +158,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
+    private fun changeIconsAppBarColor(
+        menu: Menu,
+        color : Int
+    ) {
+        menu.forEach { menuItem ->
+            menuItem.icon?.let { icon ->
+                val drawable = icon.mutate()
+                drawable.setTint(color)
+                menuItem.icon = drawable
+            }
+        }
+    }
+
     private fun takePictureAppBar(): Boolean {
         requestCamera.launch(Manifest.permission.CAMERA)
         return true
@@ -213,6 +224,7 @@ class MainActivity : AppCompatActivity() {
                 window.statusBarColor = newColorStatusBar
                 window.navigationBarColor = newColorStatusBar
                 preferences.saveColorStatusBar(newColorStatusBar)
+                changeIconsAppBarColor(binding.includeToolbar.toolbar.menu,newColorStatusBar)
                 showDialogChangeAppBar()
             },
         )
