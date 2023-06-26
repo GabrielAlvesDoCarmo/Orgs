@@ -37,10 +37,11 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun setupActivity() = with(binding) {
+        product = getItemSelected()
         dialog = DialogUtils(this@FormActivity)
         timePicker = setupMaterialTimePicker()
         dataPicker = setupMaterialDatePicker()
-        getItemSelected()?.let { safeProduct ->
+        product?.let { safeProduct ->
             url = safeProduct.image
             formImageProduct.loadImageDataWithUrl(dialog.imageLoader, safeProduct.image)
             inputProductEditName.setText(safeProduct.name)
@@ -49,7 +50,6 @@ class FormActivity : AppCompatActivity() {
             inputProductEditDate.setText(safeProduct.date)
             inputProductEditHour.setText(safeProduct.time)
         }
-
         inputBtnSave.onClick { saveProduct() }
         formImageProduct.onClick {
             showDialogImageProduct()
@@ -98,8 +98,8 @@ class FormActivity : AppCompatActivity() {
     private fun generateProduct() {
         val database = AppDatabase.getInstance(applicationContext)
         val dao = database.productDao()
-        getItemSelected()?.let {
-            dao.updateProduct(it)
+        product?.let {
+            dao.updateProduct(getProduct())
         } ?: run {
             dao.saveProduct(getProduct())
         }
@@ -107,14 +107,26 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun getProduct() = binding.run {
-        return@run Product(
-            name = inputProductEditName.text.toString(),
-            description = inputProductEditDescription.text.toString(),
-            value = validateValue(),
-            image = url,
-            date = inputProductEditDate.text.toString(),
-            time = inputProductEditHour.text.toString(),
-        )
+        return@run product?.let {
+            Product(
+                id = it.id,
+                name = inputProductEditName.text.toString(),
+                description = inputProductEditDescription.text.toString(),
+                value = validateValue(),
+                image = url,
+                date = inputProductEditDate.text.toString(),
+                time = inputProductEditHour.text.toString(),
+            )
+        }?: run{
+            Product(
+                name = inputProductEditName.text.toString(),
+                description = inputProductEditDescription.text.toString(),
+                value = validateValue(),
+                image = url,
+                date = inputProductEditDate.text.toString(),
+                time = inputProductEditHour.text.toString(),
+            )
+        }
     }
 
     private fun validateValue() = binding.run {

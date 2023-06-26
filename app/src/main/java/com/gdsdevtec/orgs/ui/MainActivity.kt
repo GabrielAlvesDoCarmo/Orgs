@@ -40,13 +40,14 @@ class MainActivity : AppCompatActivity() {
            img?.let { binding.includeToolbar.appBarImageView.setImageBitmap(img) }
         }
     }
-
-    private val database by lazy { AppDatabase.getInstance(this) }
+    private val dao by lazy { AppDatabase.getInstance(this).productDao() }
+    private var allProducts : List<Product> = listOf()
     private lateinit var dialogUtils: DialogUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        allProducts = dao.getAllProducts()
         bindingSetup()
     }
 
@@ -60,9 +61,13 @@ class MainActivity : AppCompatActivity() {
         mainFabAdd.onClick {
             nextScreen(FormActivity())
         }
+//        swipeRefreshLayout.setOnRefreshListener {
+//            allProducts = dao.getAllProducts()
+//            productAdapter.updateList(allProducts)
+//        }
     }
     private fun productsAdapter() = ProductsAdapter(
-        listProducts = database.productDao().getAllProducts(),
+        listProducts = allProducts,
         imageLoader = DialogUtils(this@MainActivity).imageLoader,
         itemSelected = { itemSelected ->
             nextScreen(DetailsProductActivity(), Pair("PRODUCT", itemSelected))
@@ -87,8 +92,8 @@ class MainActivity : AppCompatActivity() {
                 nextScreen(FormActivity(), Pair("PRODUCT", product))
             }
             R.id.menu_excluded-> {
-                database.productDao().deleteProduct(product)
-                productAdapter.updateList(database.productDao().getAllProducts())
+                dao.deleteProduct(product)
+                productAdapter.updateList(dao.getAllProducts())
             }
         }
         return true
@@ -96,8 +101,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        productAdapter.updateList(database.productDao().getAllProducts())
-        productAdapter.updateList(database.productDao().getAllProducts())
+        allProducts = dao.getAllProducts()
+        productAdapter.updateList(allProducts)
     }
 
     private fun showDialogChangeApp() {

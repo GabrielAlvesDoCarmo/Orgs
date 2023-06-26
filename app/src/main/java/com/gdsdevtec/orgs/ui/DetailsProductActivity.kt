@@ -28,15 +28,18 @@ class DetailsProductActivity : AppCompatActivity() {
 
     private fun setupActivity() {
         product = getItemSelected()
-        product?.let { product ->
+        product?.let { safeProduct ->
+            product = dao.getProductForId(safeProduct.id)
             setProductDetail(product)
         } ?: run { finish() }
     }
 
     override fun onResume() {
         super.onResume()
-        product?.let { safeProduct -> product = dao.getProductForId(safeProduct.id) }
-        product?.let { setProductDetail(it) } ?: run { finish() }
+        product?.let { safeProduct ->
+            product = dao.getProductForId(safeProduct.id)
+            setProductDetail(product)
+        } ?: run { finish() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -47,10 +50,11 @@ class DetailsProductActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_editable -> {
-                nextScreen(FormActivity(), Pair("PRODUCT", getItemSelected()!!))
+                product?.let {
+                    nextScreen(FormActivity(), Pair("PRODUCT", it))
+                }
                 true
             }
-
             R.id.menu_excluded -> {
                 product?.let { dao.deleteProduct(it) }
                 finish()
@@ -70,13 +74,15 @@ class DetailsProductActivity : AppCompatActivity() {
     }
 
 
-    private fun setProductDetail(product: Product) = with(binding) {
-        detailsProductImageView.loadImageDataWithUrl(
-            DialogUtils(this@DetailsProductActivity).imageLoader,
-            product.image
-        )
-        detailsProductTextValue.text = product.value.convertBigDecimalForCurrencyLocale()
-        detailsProductTextTitle.text = product.name
-        detailsProductTextDescription.text = product.description
+    private fun setProductDetail(product: Product?) = with(binding) {
+       product?.let {safeProduct->
+           detailsProductImageView.loadImageDataWithUrl(
+               DialogUtils(this@DetailsProductActivity).imageLoader,
+               safeProduct.image
+           )
+           detailsProductTextValue.text = safeProduct.value.convertBigDecimalForCurrencyLocale()
+           detailsProductTextTitle.text = safeProduct.name
+           detailsProductTextDescription.text = safeProduct.description
+       }
     }
 }
