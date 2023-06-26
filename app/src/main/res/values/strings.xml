@@ -21,4 +21,17 @@
     <string name="icon_hour">iconde de hora</string>
     <string name="edit_menu">Editar</string>
     <string name="edit_trash_menu">Excluir</string>
+    <string name="deseja_personalizar_seu_app">Deseja personalizar seu app?</string>
+    <string name="voce_pode_alterar_s_cores_do_seu_aplicativo">Voce pode alterar s cores do seu aplicativo</string>
+    <string name="sim">Sim</string>
+    <string name="n_o">Não</string>
+    <string name="escolha_um_opcao">Escolha um opcao</string>
+    <string name="como_deseja_prosseguir">Como deseja prosseguir?</string>
+    <string name="camera">Camera</string>
+    <string name="selecionar_cor">Selecionar Cor</string>
+    <string name="selecione_a_cor_da_status_bar">Selecione a cor da status Bar</string>
+    <string name="selecione_a_cor_da_appbar">Selecione a Cor da AppBar</string>
+    <string name="selecione_a_cor_do_botao">Selecione a Cor do botao</string>
+    <string name="selecione_a_cor_das_letras">Selecione a Cor das letras</string>
+    <string name="selecione_a_cor_de_fundo">Selecione a Cor de fundo</string>
 </resources>

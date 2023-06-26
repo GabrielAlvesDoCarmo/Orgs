@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,7 @@ import com.gdsdevtec.orgs.utils.ext.onClick
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val preferences by lazy { OrgsPreferences.getInstance(this) }
-    private lateinit var productAdapter: ProductsAdapter
+    private val dao by lazy { AppDatabase.getInstance(this).productDao() }
     private val requestCamera = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { result ->
@@ -37,12 +38,18 @@ class MainActivity : AppCompatActivity() {
     ) {result->
         if (result.resultCode == RESULT_OK) {
             val img = result.data?.extras?.get("data") as? Bitmap
-           img?.let { binding.includeToolbar.appBarImageView.setImageBitmap(img) }
+           img?.let {
+               binding.includeToolbar.appBarImageView.apply {
+                   isVisible = true
+                   binding.includeToolbar.appBarImageView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                   binding.includeToolbar.appBarImageView.setImageBitmap(img)
+               }
+           }
         }
     }
-    private val dao by lazy { AppDatabase.getInstance(this).productDao() }
-    private var allProducts : List<Product> = listOf()
+    private lateinit var productAdapter: ProductsAdapter
     private lateinit var dialogUtils: DialogUtils
+    private var allProducts : List<Product> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,10 +114,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showDialogChangeApp() {
         dialogUtils.showDialog(
-            title = "Deseja personalizar seu app?",
-            message = "Voce pode alterar s cores do seu aplicativo",
-            textPositiveButton = "Sim",
-            textNegativeButton = "Não",
+            title = getString(R.string.deseja_personalizar_seu_app),
+            message = getString(R.string.voce_pode_alterar_s_cores_do_seu_aplicativo),
+            textPositiveButton = getString(R.string.sim),
+            textNegativeButton = getString(R.string.n_o),
             positiveButton = {
                 selectedOptionsChangeAppBar()
             },
@@ -119,9 +126,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun selectedOptionsChangeAppBar() {
         dialogUtils.showDialog(
-            title = "Escolha um opcao",
-            message = "Como deseja prosseguir?",
-            textPositiveButton = "Camera",
+            title = getString(R.string.escolha_um_opcao),
+            message = getString(R.string.como_deseja_prosseguir),
+            textPositiveButton = getString(R.string.camera),
             positiveButton = {
                 requestCamera.launch(Manifest.permission.CAMERA)
             },
@@ -134,21 +141,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun changeColorStatusBar() {
         dialogUtils.colorDialog(
-            titleDialogColor = "Selecione a cor da status Bar",
+            titleDialogColor = getString(R.string.selecione_a_cor_da_status_bar),
             actionPositiveButton = {newColorStatusBar->
                 window.statusBarColor = newColorStatusBar
+                window.navigationBarColor = newColorStatusBar
                 preferences.saveColorStatusBar(newColorStatusBar)
                 showDialogChangeAppBar()
             },
-            actionNegativeButton = {
-                selectedOptionsChangeAppBar()
-            }
         )
     }
 
     private fun showDialogChangeAppBar() {
         dialogUtils.colorDialog(
-            titleDialogColor = "Selecione a Cor da AppBar",
+            titleDialogColor = getString(R.string.selecione_a_cor_da_appbar),
             actionPositiveButton = {newColorAppBar->
                 binding.includeToolbar.apply {
                     appBarImageView.isVisible = false
@@ -158,55 +163,41 @@ class MainActivity : AppCompatActivity() {
                 }
                 showDialogColorFAB()
             },
-            actionNegativeButton = {
-                changeColorStatusBar()
-            }
         )
     }
 
     private fun showDialogColorFAB() {
         dialogUtils.colorDialog(
-            titleDialogColor = "Selecione a Cor do botao",
+            titleDialogColor = getString(R.string.selecione_a_cor_do_botao),
             actionPositiveButton = {newColorFab->
                 binding.mainFabAdd.setBackgroundColor(newColorFab)
                 preferences.saveColorBtn(newColorFab)
 
                 showDialogColorLetters()
-            },
-            actionNegativeButton = {
-                showDialogChangeApp()
             }
         )
     }
 
     private fun showDialogColorLetters() {
         dialogUtils.colorDialog(
-            titleDialogColor = "Selecione a Cor das letras",
+            titleDialogColor = getString(R.string.selecione_a_cor_das_letras),
             actionPositiveButton = {newColorLetters->
                 binding.includeToolbar.collapsingToolbarLayout.setExpandedTitleColor(newColorLetters)
                 binding.mainFabAdd.setTextColor(newColorLetters)
                 preferences.saveColorLetters(newColorLetters)
                 showBackGroundApp()
-            },
-            actionNegativeButton = {
-                showDialogColorFAB()
             }
         )
     }
 
     private fun showBackGroundApp() {
         dialogUtils.colorDialog(
-            titleDialogColor = "Selecione a Cor de fundo",
+            titleDialogColor = getString(R.string.selecione_a_cor_de_fundo),
             actionPositiveButton = {newBackgroundColor->
                 binding.containerRootActivityMain.setBackgroundColor(newBackgroundColor)
                 preferences.saveColorBackground(newBackgroundColor)
 
-            },
-            actionNegativeButton = {
-                showDialogColorLetters()
             }
         )
     }
-
-
 }

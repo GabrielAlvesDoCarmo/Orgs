@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <!-- TODO    Colocar opcao de tirar uma foto ou pegar da galeria pro orgs app bar-->
     <include
         android:id="@+id/include_toolbar"
         layout="@layout/app_bar_orgs_default" />
