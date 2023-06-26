@@ -18,6 +18,7 @@ import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.data.database.db.AppDatabase
 import com.gdsdevtec.orgs.databinding.ActivityMainBinding
 import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.nextScreen
 import com.gdsdevtec.orgs.utils.ext.onClick
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         listProducts = allProducts,
         imageLoader = DialogUtils(this@MainActivity).imageLoader,
         itemSelected = { itemSelected ->
-            nextScreen(DetailsProductActivity(), Pair("PRODUCT", itemSelected))
+            nextScreen(DetailsProductActivity(), Pair(Constants.PRODUCT_ID, itemSelected.id))
         },
         onLongItemClick = ::onLongItemClick
     )
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     private fun onClickMenuPopUpItem(itemMenu: MenuItem?, product: Product): Boolean {
         when(itemMenu?.itemId){
             R.id.menu_editable-> {
-                nextScreen(FormActivity(), Pair("PRODUCT", product))
+                nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, product.id))
             }
             R.id.menu_excluded-> {
                 dao.deleteProduct(product)

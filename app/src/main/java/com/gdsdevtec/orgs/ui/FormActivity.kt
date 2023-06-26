@@ -1,12 +1,12 @@
 package com.gdsdevtec.orgs.ui
 
 import android.icu.util.Calendar
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gdsdevtec.orgs.data.database.db.AppDatabase
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.formatTimer
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
@@ -25,6 +25,8 @@ class FormActivity : AppCompatActivity() {
         ActivityFormBinding.inflate(layoutInflater)
     }
     private val calendar by lazy { Calendar.getInstance() }
+    private val dao by lazy { AppDatabase.getInstance(applicationContext).productDao() }
+    private var productID: Long = 0L
     private var product: Product? = null
     private var url: String? = null
     private lateinit var dialog: DialogUtils
@@ -36,8 +38,13 @@ class FormActivity : AppCompatActivity() {
         setupActivity()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     private fun setupActivity() = with(binding) {
-        product = getItemSelected()
+        productID = getItemSelected()
+        product = dao.getProductForId(productID)
         dialog = DialogUtils(this@FormActivity)
         timePicker = setupMaterialTimePicker()
         dataPicker = setupMaterialDatePicker()
@@ -96,13 +103,7 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun generateProduct() {
-        val database = AppDatabase.getInstance(applicationContext)
-        val dao = database.productDao()
-        product?.let {
-            dao.updateProduct(getProduct())
-        } ?: run {
-            dao.saveProduct(getProduct())
-        }
+        dao.saveProduct(getProduct())
         finish()
     }
 
@@ -117,7 +118,7 @@ class FormActivity : AppCompatActivity() {
                 date = inputProductEditDate.text.toString(),
                 time = inputProductEditHour.text.toString(),
             )
-        }?: run{
+        } ?: run {
             Product(
                 name = inputProductEditName.text.toString(),
                 description = inputProductEditDescription.text.toString(),
@@ -164,12 +165,8 @@ class FormActivity : AppCompatActivity() {
         else inputProductLayoutName.setLayoutError(false)
     }
 
-    private fun getItemSelected(): Product? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("PRODUCT", Product::class.java)
-        } else {
-            intent.extras?.get("PRODUCT") as? Product
-        }
+    private fun getItemSelected(): Long {
+        return intent.getLongExtra(Constants.PRODUCT_ID, 0L)
     }
 
     private fun setupMaterialDatePicker() = MaterialDatePicker
