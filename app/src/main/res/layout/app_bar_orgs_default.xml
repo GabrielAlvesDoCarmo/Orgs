@@ -11,8 +11,8 @@
         android:layout_height="match_parent"
         app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
         app:title="@string/app_name"
-        app:expandedTitleTextColor="#FFFFFF"
-        app:collapsedTitleTextColor="@color/white">
+        app:expandedTitleTextColor="@color/color_primary"
+        app:collapsedTitleTextColor="@color/color_primary_variant">
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/app_bar_image_view"
             android:layout_width="match_parent"

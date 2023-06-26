@@ -5,6 +5,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -25,6 +26,8 @@ import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.nextScreen
 import com.gdsdevtec.orgs.utils.ext.onClick
+import com.google.android.material.appbar.AppBarLayout
+import kotlin.math.abs
 
 
 class MainActivity : AppCompatActivity() {
@@ -78,7 +81,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAppBar() = with(binding.includeToolbar.toolbar) {
-        changeIconsAppBarColor(menu,getColor(R.color.color_primary_variant) )
+        binding.includeToolbar.appbarContainer.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val isExpanding = verticalOffset == 0
+            val isCollapsing = abs(verticalOffset) >= appBarLayout.totalScrollRange
+            if (isExpanding) this.menu.forEach {
+                it.isVisible = true
+            }
+            if (isCollapsing) this.menu.forEach {
+                it.isVisible = false
+            }
+        }
+        changeIconsAppBarColor(menu, getColor(R.color.color_primary_variant))
         navigationIcon?.setTint(getColor(R.color.color_primary_variant))
         setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
@@ -150,7 +163,8 @@ class MainActivity : AppCompatActivity() {
                     productAdapter.updateList(allProducts)
                     true
                 }
-                R.id.change_picture_app_menu-> takePictureAppBar()
+
+                R.id.change_picture_app_menu -> takePictureAppBar()
 
                 R.id.change_color_app_menu -> changeColorStatusBar()
                 else -> false
@@ -161,7 +175,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ResourceAsColor")
     private fun changeIconsAppBarColor(
         menu: Menu,
-        color : Int
+        color: Int
     ) {
         menu.forEach { menuItem ->
             menuItem.icon?.let { icon ->
@@ -224,7 +238,7 @@ class MainActivity : AppCompatActivity() {
                 window.statusBarColor = newColorStatusBar
                 window.navigationBarColor = newColorStatusBar
                 preferences.saveColorStatusBar(newColorStatusBar)
-                changeIconsAppBarColor(binding.includeToolbar.toolbar.menu,newColorStatusBar)
+                changeIconsAppBarColor(binding.includeToolbar.toolbar.menu, newColorStatusBar)
                 showDialogChangeAppBar()
             },
         )
@@ -262,7 +276,9 @@ class MainActivity : AppCompatActivity() {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_das_letras),
             actionPositiveButton = { newColorLetters ->
-                binding.includeToolbar.collapsingToolbarLayout.setExpandedTitleColor(newColorLetters)
+                binding.includeToolbar.collapsingToolbarLayout.setExpandedTitleColor(
+                    newColorLetters
+                )
                 binding.mainFabAdd.setTextColor(newColorLetters)
                 preferences.saveColorLetters(newColorLetters)
                 showBackGroundApp()
