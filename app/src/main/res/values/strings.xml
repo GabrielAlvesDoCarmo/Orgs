@@ -19,4 +19,6 @@
     <string name="selected_date">Selecionar data</string>
     <string name="input_label_hour">Hora :</string>
     <string name="icon_hour">iconde de hora</string>
+    <string name="edit_menu">Editar</string>
+    <string name="edit_trash_menu">Excluir</string>
 </resources>

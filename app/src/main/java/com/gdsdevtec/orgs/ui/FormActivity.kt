@@ -1,9 +1,10 @@
 package com.gdsdevtec.orgs.ui
 
 import android.icu.util.Calendar
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.gdsdevtec.orgs.dao.ProductDao
+import com.gdsdevtec.orgs.data.database.db.AppDatabase
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
@@ -24,6 +25,7 @@ class FormActivity : AppCompatActivity() {
         ActivityFormBinding.inflate(layoutInflater)
     }
     private val calendar by lazy { Calendar.getInstance() }
+    private var product: Product? = null
     private var url: String? = null
     private lateinit var dialog: DialogUtils
     private lateinit var timePicker: MaterialTimePicker
@@ -38,6 +40,15 @@ class FormActivity : AppCompatActivity() {
         dialog = DialogUtils(this@FormActivity)
         timePicker = setupMaterialTimePicker()
         dataPicker = setupMaterialDatePicker()
+        getItemSelected()?.let { safeProduct ->
+            url = safeProduct.image
+            formImageProduct.loadImageDataWithUrl(dialog.imageLoader, safeProduct.image)
+            inputProductEditName.setText(safeProduct.name)
+            inputProductEditDescription.setText(safeProduct.description)
+            inputProductEditValue.setText(safeProduct.value.toPlainString())
+            inputProductEditDate.setText(safeProduct.date)
+            inputProductEditHour.setText(safeProduct.time)
+        }
 
         inputBtnSave.onClick { saveProduct() }
         formImageProduct.onClick {
@@ -85,7 +96,13 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun generateProduct() {
-        ProductDao.add(getProduct())
+        val database = AppDatabase.getInstance(applicationContext)
+        val dao = database.productDao()
+        getItemSelected()?.let {
+            dao.updateProduct(it)
+        } ?: run {
+            dao.saveProduct(getProduct())
+        }
         finish()
     }
 
@@ -133,6 +150,14 @@ class FormActivity : AppCompatActivity() {
         val name = inputProductEditName.text.toString()
         return@run if (name.isEmpty()) inputProductLayoutName.setLayoutError(true)
         else inputProductLayoutName.setLayoutError(false)
+    }
+
+    private fun getItemSelected(): Product? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("PRODUCT", Product::class.java)
+        } else {
+            intent.extras?.get("PRODUCT") as? Product
+        }
     }
 
     private fun setupMaterialDatePicker() = MaterialDatePicker

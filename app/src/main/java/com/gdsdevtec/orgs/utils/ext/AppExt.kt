@@ -45,7 +45,7 @@ fun BigDecimal.convertBigDecimalForCurrencyLocale(): String {
 }
 
 fun AppCompatImageView.loadImageDataWithUrl(imageLoader: ImageLoader, url: String?) {
-    load(url, imageLoader = imageLoader) {
+    load(data = url?: R.drawable.image_default, imageLoader = imageLoader ) {
         placeholder(R.drawable.playceholder)
         fallback(R.drawable.error_load_image)
         error(R.drawable.error_load_image)

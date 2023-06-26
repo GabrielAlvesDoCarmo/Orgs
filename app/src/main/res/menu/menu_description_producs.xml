@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+     <item android:id="@+id/menu_editable"
+         android:title="@string/edit_menu"
+         android:icon="@drawable/ic_edit_menu"
+          app:showAsAction="ifRoom"/>
+
+     <item android:id="@+id/menu_excluded"
+         android:title="@string/edit_trash_menu"
+         android:icon="@drawable/ic_trash_menu"
+         app:showAsAction="ifRoom"/>
+</menu>

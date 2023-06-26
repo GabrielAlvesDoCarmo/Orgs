@@ -6,11 +6,17 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.gdsdevtec.orgs.dao.ProductDao
+import com.gdsdevtec.orgs.R
+import com.gdsdevtec.orgs.data.database.db.AppDatabase
 import com.gdsdevtec.orgs.databinding.ActivityMainBinding
+import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.nextScreen
 import com.gdsdevtec.orgs.utils.ext.onClick
@@ -31,10 +37,11 @@ class MainActivity : AppCompatActivity() {
     ) {result->
         if (result.resultCode == RESULT_OK) {
             val img = result.data?.extras?.get("data") as? Bitmap
-            if (img != null) binding.includeToolbar.appBarImageView.setImageBitmap(img)
-
+           img?.let { binding.includeToolbar.appBarImageView.setImageBitmap(img) }
         }
     }
+
+    private val database by lazy { AppDatabase.getInstance(this) }
     private lateinit var dialogUtils: DialogUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +60,44 @@ class MainActivity : AppCompatActivity() {
         mainFabAdd.onClick {
             nextScreen(FormActivity())
         }
+    }
+    private fun productsAdapter() = ProductsAdapter(
+        listProducts = database.productDao().getAllProducts(),
+        imageLoader = DialogUtils(this@MainActivity).imageLoader,
+        itemSelected = { itemSelected ->
+            nextScreen(DetailsProductActivity(), Pair("PRODUCT", itemSelected))
+        },
+        onLongItemClick = ::onLongItemClick
+    )
+
+    private fun onLongItemClick(view: View?,product: Product) : Boolean {
+        val popUp = PopupMenu(this,view)
+        val inflater : MenuInflater = popUp.menuInflater
+        inflater.inflate(R.menu.menu_description_producs,popUp.menu)
+        popUp.setOnMenuItemClickListener{itemMenu->
+            onClickMenuPopUpItem(itemMenu,product)
+        }
+        popUp.show()
+        return true
+    }
+
+    private fun onClickMenuPopUpItem(itemMenu: MenuItem?, product: Product): Boolean {
+        when(itemMenu?.itemId){
+            R.id.menu_editable-> {
+                nextScreen(FormActivity(), Pair("PRODUCT", product))
+            }
+            R.id.menu_excluded-> {
+                database.productDao().deleteProduct(product)
+                productAdapter.updateList(database.productDao().getAllProducts())
+            }
+        }
+        return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        productAdapter.updateList(database.productDao().getAllProducts())
+        productAdapter.updateList(database.productDao().getAllProducts())
     }
 
     private fun showDialogChangeApp() {
@@ -158,18 +203,5 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun productsAdapter() = ProductsAdapter(
-        listProducts = getProducts(),
-        imageLoader = DialogUtils(this@MainActivity).imageLoader,
-        itemSelected = { itemSelected ->
-            nextScreen(DetailsProductActivity(), Pair("PRODUCT", itemSelected))
-        }
-    )
 
-    override fun onResume() {
-        super.onResume()
-        productAdapter.updateList(getProducts())
-    }
-
-    private fun getProducts() = ProductDao.getAllProducts()
 }

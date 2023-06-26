@@ -17,7 +17,8 @@ import com.gdsdevtec.orgs.utils.ext.onClick
 class ProductsAdapter(
     listProducts: List<Product>,
     private val imageLoader: ImageLoader,
-    private val itemSelected: (Product) -> Unit
+    private val itemSelected: (Product) -> Unit,
+    private val onLongItemClick : (View?,Product)-> Boolean
 ) : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
     inner class ProductViewHolder(val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -39,6 +40,9 @@ class ProductsAdapter(
         holder.binding.apply {
             bindItemView(this, product)
             root.onClick { itemSelected.invoke(product) }
+            root.setOnLongClickListener {
+                onLongItemClick.invoke(it,product)
+            }
         }
     }
 
