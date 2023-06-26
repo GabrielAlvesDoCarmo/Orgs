@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/icon_filter_list"
+        android:title="@string/ordenar"
+        android:icon="@drawable/ic_filter_list"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item android:id="@+id/menu_name_desc"
+                android:title="@string/nome_desc"
+                app:showAsAction="withText"/>
+
+            <item
+                android:id="@+id/menu_name_asc"
+                android:title="@string/nome_asc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_description_desc"
+                android:title="@string/descicao_desc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_description_asc"
+                android:title="@string/descicao_asc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_value_desc"
+                android:title="@string/valor_desc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_value_asc"
+                android:title="@string/valor_asc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_date_desc"
+                android:title="@string/data_desc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_date_asc"
+                android:title="@string/data_asc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_timer_desc"
+                android:title="@string/hora_desc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_timer_asc"
+                android:title="@string/hora_asc"
+                app:showAsAction="withText"/>
+
+            <item android:id="@+id/menu_not_order"
+                android:title="@string/sem_ordem"
+                app:showAsAction="withText"/>
+        </menu>
+    </item>
+
+    <item android:id="@+id/change_color_app_menu"
+        android:icon="@drawable/ic_color_app"
+        app:showAsAction="ifRoom"
+        android:title="@string/color_app"/>
+
+    <item android:id="@+id/change_picture_app_menu"
+        android:icon="@drawable/ic_cam_appbar"
+        app:showAsAction="ifRoom"
+        android:title="@string/tirar_uma_foto"/>
+</menu>

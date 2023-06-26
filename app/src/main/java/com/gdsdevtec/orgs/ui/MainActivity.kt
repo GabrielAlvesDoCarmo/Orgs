@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.data.database.db.AppDatabase
@@ -36,21 +38,22 @@ class MainActivity : AppCompatActivity() {
 
     private val launchCam = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {result->
+    ) { result ->
         if (result.resultCode == RESULT_OK) {
             val img = result.data?.extras?.get("data") as? Bitmap
-           img?.let {
-               binding.includeToolbar.appBarImageView.apply {
-                   isVisible = true
-                   binding.includeToolbar.appBarImageView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                   binding.includeToolbar.appBarImageView.setImageBitmap(img)
-               }
-           }
+            img?.let {
+                binding.includeToolbar.appBarImageView.apply {
+                    isVisible = true
+                    binding.includeToolbar.appBarImageView.layoutParams.height =
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    binding.includeToolbar.appBarImageView.setImageBitmap(img)
+                }
+            }
         }
     }
     private lateinit var productAdapter: ProductsAdapter
     private lateinit var dialogUtils: DialogUtils
-    private var allProducts : List<Product> = listOf()
+    private var allProducts: List<Product> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +64,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindingSetup() = binding.run {
         dialogUtils = DialogUtils(this@MainActivity)
-        includeToolbar.appbarContainer.onClick {
-            showDialogChangeApp()
-        }
+        setupOrderMenu()
+
         productAdapter = productsAdapter()
         rvMain.adapter = productAdapter
         mainFabAdd.onClick {
@@ -74,6 +76,96 @@ class MainActivity : AppCompatActivity() {
 //            productAdapter.updateList(allProducts)
 //        }
     }
+
+    private fun setupOrderMenu() {
+        val menu = binding.includeToolbar.toolbar.menu
+        menu.forEach {menuItem->
+                menuItem.icon?.let {icon->
+                val drawable = icon.mutate()
+                drawable.setTint(ContextCompat.getColor(this, R.color.color_primary_variant))
+                menuItem.icon = drawable
+            }
+        }
+        binding.includeToolbar.toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_name_desc -> {
+                    allProducts = allProducts.sortedByDescending { it.name }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_name_asc -> {
+                    allProducts = allProducts.sortedBy { it.name }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_description_desc -> {
+                    allProducts = allProducts.sortedByDescending { it.description }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_description_asc -> {
+                    allProducts = allProducts.sortedBy { it.description }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_value_desc -> {
+                    allProducts = allProducts.sortedByDescending { it.value }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_value_asc -> {
+                    allProducts = allProducts.sortedBy { it.value }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_date_desc -> {
+                    allProducts = allProducts.sortedByDescending { it.date }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_date_asc -> {
+                    allProducts = allProducts.sortedBy { it.date }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_timer_desc -> {
+                    allProducts = allProducts.sortedByDescending { it.time }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_timer_asc -> {
+                    allProducts = allProducts.sortedBy { it.time }
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+
+                R.id.menu_not_order -> {
+                    allProducts = dao.getAllProducts()
+                    productAdapter.updateList(allProducts)
+                    true
+                }
+                R.id.change_picture_app_menu-> takePictureAppBar()
+
+                R.id.change_color_app_menu -> changeColorStatusBar()
+                else -> false
+            }
+        }
+    }
+
+    private fun takePictureAppBar(): Boolean {
+        requestCamera.launch(Manifest.permission.CAMERA)
+        return true
+    }
+
     private fun productsAdapter() = ProductsAdapter(
         listProducts = allProducts,
         imageLoader = DialogUtils(this@MainActivity).imageLoader,
@@ -83,23 +175,24 @@ class MainActivity : AppCompatActivity() {
         onLongItemClick = ::onLongItemClick
     )
 
-    private fun onLongItemClick(view: View?,product: Product) : Boolean {
-        val popUp = PopupMenu(this,view)
-        val inflater : MenuInflater = popUp.menuInflater
-        inflater.inflate(R.menu.menu_description_producs,popUp.menu)
-        popUp.setOnMenuItemClickListener{itemMenu->
-            onClickMenuPopUpItem(itemMenu,product)
+    private fun onLongItemClick(view: View?, product: Product): Boolean {
+        val popUp = PopupMenu(this, view)
+        val inflater: MenuInflater = popUp.menuInflater
+        inflater.inflate(R.menu.menu_description_producs, popUp.menu)
+        popUp.setOnMenuItemClickListener { itemMenu ->
+            onClickMenuPopUpItem(itemMenu, product)
         }
         popUp.show()
         return true
     }
 
     private fun onClickMenuPopUpItem(itemMenu: MenuItem?, product: Product): Boolean {
-        when(itemMenu?.itemId){
-            R.id.menu_editable-> {
+        when (itemMenu?.itemId) {
+            R.id.menu_editable -> {
                 nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, product.id))
             }
-            R.id.menu_excluded-> {
+
+            R.id.menu_excluded -> {
                 dao.deleteProduct(product)
                 productAdapter.updateList(dao.getAllProducts())
             }
@@ -113,49 +206,23 @@ class MainActivity : AppCompatActivity() {
         productAdapter.updateList(allProducts)
     }
 
-    private fun showDialogChangeApp() {
-        dialogUtils.showDialog(
-            title = getString(R.string.deseja_personalizar_seu_app),
-            message = getString(R.string.voce_pode_alterar_s_cores_do_seu_aplicativo),
-            textPositiveButton = getString(R.string.sim),
-            textNegativeButton = getString(R.string.n_o),
-            positiveButton = {
-                selectedOptionsChangeAppBar()
-            },
-        )
-    }
-
-    private fun selectedOptionsChangeAppBar() {
-        dialogUtils.showDialog(
-            title = getString(R.string.escolha_um_opcao),
-            message = getString(R.string.como_deseja_prosseguir),
-            textPositiveButton = getString(R.string.camera),
-            positiveButton = {
-                requestCamera.launch(Manifest.permission.CAMERA)
-            },
-            textNegativeButton = "Selecionar Cor",
-            negativeButton = {
-                changeColorStatusBar()
-            }
-        )
-    }
-
-    private fun changeColorStatusBar() {
+    private fun changeColorStatusBar(): Boolean {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_da_status_bar),
-            actionPositiveButton = {newColorStatusBar->
+            actionPositiveButton = { newColorStatusBar ->
                 window.statusBarColor = newColorStatusBar
                 window.navigationBarColor = newColorStatusBar
                 preferences.saveColorStatusBar(newColorStatusBar)
                 showDialogChangeAppBar()
             },
         )
+        return true
     }
 
     private fun showDialogChangeAppBar() {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_da_appbar),
-            actionPositiveButton = {newColorAppBar->
+            actionPositiveButton = { newColorAppBar ->
                 binding.includeToolbar.apply {
                     appBarImageView.isVisible = false
                     appbarContainer.setBackgroundColor(newColorAppBar)
@@ -170,7 +237,7 @@ class MainActivity : AppCompatActivity() {
     private fun showDialogColorFAB() {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_do_botao),
-            actionPositiveButton = {newColorFab->
+            actionPositiveButton = { newColorFab ->
                 binding.mainFabAdd.setBackgroundColor(newColorFab)
                 preferences.saveColorBtn(newColorFab)
 
@@ -182,7 +249,7 @@ class MainActivity : AppCompatActivity() {
     private fun showDialogColorLetters() {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_das_letras),
-            actionPositiveButton = {newColorLetters->
+            actionPositiveButton = { newColorLetters ->
                 binding.includeToolbar.collapsingToolbarLayout.setExpandedTitleColor(newColorLetters)
                 binding.mainFabAdd.setTextColor(newColorLetters)
                 preferences.saveColorLetters(newColorLetters)
@@ -194,7 +261,7 @@ class MainActivity : AppCompatActivity() {
     private fun showBackGroundApp() {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_de_fundo),
-            actionPositiveButton = {newBackgroundColor->
+            actionPositiveButton = { newBackgroundColor ->
                 binding.containerRootActivityMain.setBackgroundColor(newBackgroundColor)
                 preferences.saveColorBackground(newBackgroundColor)
 
