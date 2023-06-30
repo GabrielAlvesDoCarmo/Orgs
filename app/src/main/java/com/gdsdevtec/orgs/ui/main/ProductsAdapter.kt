@@ -1,4 +1,4 @@
-package com.gdsdevtec.orgs.ui
+package com.gdsdevtec.orgs.ui.main
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

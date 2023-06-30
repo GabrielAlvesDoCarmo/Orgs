@@ -1,49 +1,55 @@
-package com.gdsdevtec.orgs.ui
+package com.gdsdevtec.orgs.ui.detail
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.gdsdevtec.orgs.R
-import com.gdsdevtec.orgs.data.database.db.AppDatabase
 import com.gdsdevtec.orgs.databinding.ActivityDetailsProductBinding
 import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.ui.form.FormActivity
 import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
 import com.gdsdevtec.orgs.utils.ext.nextScreen
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsProductActivity : AppCompatActivity() {
     private val binding: ActivityDetailsProductBinding by lazy {
         ActivityDetailsProductBinding.inflate(layoutInflater)
     }
-    private val dao by lazy { AppDatabase.getInstance(this).productDao() }
-    private var product: Product? = null
+    @Inject
+    lateinit var viewModel: DetailsViewModel
     private var productId: Long = 0L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupActivity()
+        observers()
     }
 
-    private fun setupActivity() {
-        productId = getItemSelected()
-        product = dao.getProductForId(productId)
-    }
-
-    private fun refreshProductSelected() {
-        product?.let { safeProduct ->
-            product = dao.getProductForId(safeProduct.id)
-            setProductDetail(product)
-        } ?: run {
-            finish()
+    private fun observers() {
+        lifecycleScope.launch {
+            viewModel.state.collect{state->
+                when(state){
+                    is DetailsState.Success -> setProductDetail(state.product)
+                    is DetailsState.Error -> TODO()
+                    is DetailsState.Empty -> TODO()
+                }
+            }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        refreshProductSelected()
+    private fun setupActivity() {
+        productId = intent.getLongExtra(Constants.PRODUCT_ID, 0L)
+        viewModel.submitActions(
+            DetailsActions.GetProductForId(productId)
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -60,7 +66,7 @@ class DetailsProductActivity : AppCompatActivity() {
     }
 
     private fun clickExcludedMenu(): Boolean {
-        product?.let { dao.deleteProduct(it) }
+
         finish()
         return true
     }
@@ -69,11 +75,6 @@ class DetailsProductActivity : AppCompatActivity() {
         nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, productId))
         return true
     }
-
-    private fun getItemSelected(): Long {
-        return intent.getLongExtra(Constants.PRODUCT_ID, 0L)
-    }
-
 
     private fun setProductDetail(product: Product?) = with(binding) {
         product?.let { safeProduct ->

@@ -1,15 +1,16 @@
-package com.gdsdevtec.orgs.ui
+package com.gdsdevtec.orgs.ui.form
 
 import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.gdsdevtec.orgs.data.database.db.AppDatabase
+import androidx.lifecycle.lifecycleScope
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
 import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.formatTimer
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
+import com.gdsdevtec.orgs.utils.ext.message
 import com.gdsdevtec.orgs.utils.ext.millisecondsToDate
 import com.gdsdevtec.orgs.utils.ext.onClick
 import com.gdsdevtec.orgs.utils.ext.setLayoutError
@@ -18,36 +19,37 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FormActivity : AppCompatActivity() {
-    private val binding: ActivityFormBinding by lazy {
-        ActivityFormBinding.inflate(layoutInflater)
-    }
+    private val binding: ActivityFormBinding by lazy { ActivityFormBinding.inflate(layoutInflater) }
+    private val dialog: DialogUtils by lazy { DialogUtils(this) }
     private val calendar by lazy { Calendar.getInstance() }
-    private val dao by lazy { AppDatabase.getInstance(applicationContext).productDao() }
-    private var productID: Long = 0L
+    @Inject lateinit var viewModel: FormViewModel
     private var product: Product? = null
     private var url: String? = null
-    private lateinit var dialog: DialogUtils
     private lateinit var timePicker: MaterialTimePicker
     private lateinit var dataPicker: MaterialDatePicker<Long>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        getProductDb()
+        setProductForEdit()
         setupActivity()
+        observer()
+    }
+    private fun getProductDb() {
+        viewModel.submitActions(
+            FormActions.GetProductForId(
+                intent.getLongExtra(Constants.PRODUCT_ID, 0L)
+            )
+        )
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    private fun setupActivity() = with(binding) {
-        productID = getItemSelected()
-        product = dao.getProductForId(productID)
-        dialog = DialogUtils(this@FormActivity)
-        timePicker = setupMaterialTimePicker()
-        dataPicker = setupMaterialDatePicker()
+    private fun setProductForEdit() = binding.run {
         product?.let { safeProduct ->
             url = safeProduct.image
             formImageProduct.loadImageDataWithUrl(dialog.imageLoader, safeProduct.image)
@@ -57,7 +59,41 @@ class FormActivity : AppCompatActivity() {
             inputProductEditDate.setText(safeProduct.date)
             inputProductEditHour.setText(safeProduct.time)
         }
-        inputBtnSave.onClick { saveProduct() }
+    }
+
+    private fun observer() {
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                when (state) {
+                    is FormState.Loading -> binding.progressBarForm.show()
+                    is FormState.SuccessGetProductForId -> {
+                        binding.progressBarForm.hide()
+                        product = state.product
+                    }
+
+                    is FormState.SaveProduct -> {
+                        finish()
+                    }
+
+                    is FormState.Empty -> {
+                        binding.progressBarForm.hide()
+                    }
+
+                    is FormState.ErrorFormProduct -> {
+                        binding.progressBarForm.hide()
+                        message(state.msg)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupActivity() = with(binding) {
+        timePicker = setupMaterialTimePicker()
+        dataPicker = setupMaterialDatePicker()
+        inputBtnSave.onClick {
+            saveProduct()
+        }
         formImageProduct.onClick {
             showDialogImageProduct()
         }
@@ -68,7 +104,6 @@ class FormActivity : AppCompatActivity() {
             selectedTimeEvent()
         }
     }
-
     private fun showDialogImageProduct() = with(binding) {
         dialog.showDialog(
             urlDefault = url,
@@ -103,8 +138,11 @@ class FormActivity : AppCompatActivity() {
     }
 
     private fun generateProduct() {
-        dao.saveProduct(getProduct())
-        finish()
+        viewModel.submitActions(
+            FormActions.SaveProductForm(
+                getProduct()
+            )
+        )
     }
 
     private fun getProduct() = binding.run {
@@ -163,10 +201,6 @@ class FormActivity : AppCompatActivity() {
         val name = inputProductEditName.text.toString()
         return@run if (name.isEmpty()) inputProductLayoutName.setLayoutError(true)
         else inputProductLayoutName.setLayoutError(false)
-    }
-
-    private fun getItemSelected(): Long {
-        return intent.getLongExtra(Constants.PRODUCT_ID, 0L)
     }
 
     private fun setupMaterialDatePicker() = MaterialDatePicker

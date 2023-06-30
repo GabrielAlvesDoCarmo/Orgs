@@ -1,4 +1,4 @@
-package com.gdsdevtec.orgs.data.database.converter
+package com.gdsdevtec.orgs.data.local.database.converter
 
 import androidx.room.TypeConverter
 import java.math.BigDecimal
