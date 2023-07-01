@@ -1,4 +1,4 @@
-package com.gdsdevtec.orgs.model
+package com.gdsdevtec.orgs.domain.products
 
 import java.math.BigDecimal
 

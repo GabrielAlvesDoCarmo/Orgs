@@ -2,16 +2,16 @@ package com.gdsdevtec.orgs.ui.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gdsdevtec.orgs.data.mapper.toProductModel
-import com.gdsdevtec.orgs.data.repository.ProductRepository
+import com.gdsdevtec.orgs.data.usecase.ProductUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DetailsViewModel @Inject constructor(
-    private val productRepository: ProductRepository
+    private val productUseCase: ProductUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow<DetailsState>(DetailsState.Empty)
     val state: StateFlow<DetailsState> get() = _state
@@ -23,15 +23,14 @@ class DetailsViewModel @Inject constructor(
 
     private fun getProductForId(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            runCatching {
-                productRepository.getForId(productId)
-            }.onSuccess {successResult->
-                successResult.collect{entity->
-                    val product = entity?.let { it.toProductModel() }
-                    _state.value = DetailsState.Success(product)
+            val result = productUseCase.getForId(productId).single()
+            when{
+                result.success!= null->{
+                    _state.value = DetailsState.Success(result.success)
                 }
-            }.onFailure {
-                _state.value = DetailsState.Error("Falha ao abrir o producto")
+                result.error!= null->{
+                    _state.value = DetailsState.Error(result.error)
+                }
             }
         }
     }

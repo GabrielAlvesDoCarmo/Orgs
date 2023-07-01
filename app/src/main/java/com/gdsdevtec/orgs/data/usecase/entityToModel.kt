@@ -1,7 +1,7 @@
-package com.gdsdevtec.orgs.data.mapper
+package com.gdsdevtec.orgs.data.usecase
 
 import com.gdsdevtec.orgs.data.local.database.entity.ProductEntity
-import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.domain.products.Product
 
 fun ProductEntity.toProductModel() = Product(
     id = this.id,

@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.gdsdevtec.orgs.databinding.ActivityFormBinding
-import com.gdsdevtec.orgs.model.Product
+import com.gdsdevtec.orgs.domain.products.Product
 import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.formatTimer
