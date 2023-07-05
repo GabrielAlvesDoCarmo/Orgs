@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".ui.login.LoginActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/activity_login_imagem_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/activity_login_titulo"
+            app:layout_constraintStart_toStartOf="@+id/activity_login_titulo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15"
+            app:srcCompat="@drawable/orgs_logo" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/activity_login_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Orgs"
+            android:textSize="40sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_login_imagem_logo" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputlayout_usuario"
+            android:layout_height="wrap_content"
+            android:hint="@string/user"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_person_name"
+            app:startIconContentDescription="@string/icon_name_description"
+            style="@style/TextInputLayoutDefault"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_login_titulo">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_login_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputlayout_senha"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_person_name"
+            app:startIconContentDescription="@string/icon_name_description"
+            style="@style/TextInputLayoutDefault"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textInputlayout_usuario">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_login_senha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/activity_login_botao_entrar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_dark"
+            android:textAllCaps="false"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            android:text="Entrar"
+            app:layout_constraintEnd_toEndOf="@id/textInputlayout_senha"
+            app:layout_constraintStart_toStartOf="@id/textInputlayout_senha"
+            app:layout_constraintTop_toBottomOf="@id/textInputlayout_senha" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/activity_login_botao_cadastrar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:text="cadastrar usuário"
+            android:textColor="@color/color_primary_variant"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/activity_login_botao_entrar"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/activity_login_botao_entrar"
+            app:layout_constraintTop_toBottomOf="@id/activity_login_botao_entrar"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

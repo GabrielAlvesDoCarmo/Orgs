@@ -48,4 +48,6 @@
     <string name="sem_ordem">Sem ordem</string>
     <string name="color_app">Color App</string>
     <string name="tirar_uma_foto">Tirar uma foto</string>
+    <string name="user">Usuario :</string>
+    <string name="password">Senha :</string>
 </resources>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        tools:context=".ui.activity.FormularioCadastroUsuarioActivity">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_usuario"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/user"
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_person_name"
+            app:startIconContentDescription="@string/icon_name_description"
+            style="@style/TextInputLayoutDefault"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_formulario_cadastro_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputlayout_nome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/input_label_name"
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_person_name"
+            app:startIconContentDescription="@string/icon_name_description"
+            style="@style/TextInputLayoutDefault"
+            app:layout_constraintEnd_toEndOf="@id/textInputLayout_usuario"
+            app:layout_constraintStart_toStartOf="@id/textInputLayout_usuario"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayout_usuario">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_formulario_cadastro_nome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputlayout_senha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            app:startIconDrawable="@drawable/ic_password"
+            app:startIconContentDescription="@string/icon_name_description"
+            style="@style/TextInputLayoutDefault"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@id/textInputlayout_nome"
+            app:layout_constraintStart_toStartOf="@id/textInputlayout_nome"
+            app:layout_constraintTop_toBottomOf="@id/textInputlayout_nome">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_formulario_cadastro_senha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/activity_formulario_cadastro_botao_cadastrar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/holo_green_dark"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="Cadastrar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/textInputlayout_senha"
+            app:layout_constraintStart_toStartOf="@id/textInputlayout_senha"
+            app:layout_constraintTop_toBottomOf="@id/textInputlayout_senha"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
