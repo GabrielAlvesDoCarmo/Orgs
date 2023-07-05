@@ -22,8 +22,8 @@ fun Product.toProductEntity() = ProductEntity(
     time = this.time
 )
 
-fun List<ProductEntity>.toListProductModel(): List<Product> {
-    return this.map {productModel->
+fun List<ProductEntity>?.toListProductModel(): List<Product> {
+    return this?.map {productModel->
         productModel.toProductModel()
-    }
+    } ?: emptyList()
 }

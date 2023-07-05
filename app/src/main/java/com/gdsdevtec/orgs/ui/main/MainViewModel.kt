@@ -50,7 +50,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductsDB(): Flow<List<ProductEntity>> {
+    private suspend fun getProductsDB(): Flow<List<ProductEntity>?> {
         return runCatching {
             productRepository.getAllProducts()
         }.onSuccess { resultSuccess ->
@@ -60,7 +60,7 @@ class MainViewModel @Inject constructor(
         }.getOrThrow()
     }
 
-    private suspend fun getSuccessResult(resultSuccess: Flow<List<ProductEntity>>) {
+    private suspend fun getSuccessResult(resultSuccess: Flow<List<ProductEntity>?>) {
         resultSuccess.collect { listEntity ->
             _state.value = MainState.Success(listEntity.toListProductModel())
         }

@@ -8,6 +8,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import coil.ImageLoader
 import coil.load
 import com.gdsdevtec.orgs.R
+import com.gdsdevtec.orgs.data.local.database.entity.ProductEntity
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
 import java.text.NumberFormat

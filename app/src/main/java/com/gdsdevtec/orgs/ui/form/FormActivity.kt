@@ -28,7 +28,8 @@ class FormActivity : AppCompatActivity() {
     private val binding: ActivityFormBinding by lazy { ActivityFormBinding.inflate(layoutInflater) }
     private val dialog: DialogUtils by lazy { DialogUtils(this) }
     private val calendar by lazy { Calendar.getInstance() }
-    @Inject lateinit var viewModel: FormViewModel
+    @Inject
+    lateinit var viewModel: FormViewModel
     private var product: Product? = null
     private var url: String? = null
     private lateinit var timePicker: MaterialTimePicker
@@ -41,6 +42,7 @@ class FormActivity : AppCompatActivity() {
         setupActivity()
         observer()
     }
+
     private fun getProductDb() {
         viewModel.submitActions(
             FormActions.GetProductForId(
@@ -70,15 +72,8 @@ class FormActivity : AppCompatActivity() {
                         binding.progressBarForm.hide()
                         product = state.product
                     }
-
-                    is FormState.SaveProduct -> {
-                        finish()
-                    }
-
-                    is FormState.Empty -> {
-                        binding.progressBarForm.hide()
-                    }
-
+                    is FormState.SaveProduct -> finish()
+                    is FormState.Empty -> binding.progressBarForm.hide()
                     is FormState.ErrorFormProduct -> {
                         binding.progressBarForm.hide()
                         message(state.msg)
@@ -93,6 +88,7 @@ class FormActivity : AppCompatActivity() {
         dataPicker = setupMaterialDatePicker()
         inputBtnSave.onClick {
             saveProduct()
+            finish()
         }
         formImageProduct.onClick {
             showDialogImageProduct()
@@ -104,6 +100,7 @@ class FormActivity : AppCompatActivity() {
             selectedTimeEvent()
         }
     }
+
     private fun showDialogImageProduct() = with(binding) {
         dialog.showDialog(
             urlDefault = url,
