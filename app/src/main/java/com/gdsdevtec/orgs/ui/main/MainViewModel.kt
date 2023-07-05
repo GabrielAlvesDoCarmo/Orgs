@@ -2,10 +2,14 @@ package com.gdsdevtec.orgs.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gdsdevtec.orgs.data.usecase.ProductUseCase
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.data.local.database.entity.ProductEntity
+import com.gdsdevtec.orgs.data.mapper.toListProductModel
+import com.gdsdevtec.orgs.data.mapper.toProductEntity
+import com.gdsdevtec.orgs.data.repository.ProductRepository
+import com.gdsdevtec.orgs.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -13,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val productUseCase: ProductUseCase
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
     private var _state = MutableStateFlow<MainState>(MainState.Empty)
@@ -27,13 +31,14 @@ class MainViewModel @Inject constructor(
 
     private fun deleteProducts(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
-            productUseCase.delete(product).collect {
-                if (it.success != null) {
-                    _state.value = MainState.SuccessDelete(it.success)
+            runCatching {
+                productRepository.delete(product.toProductEntity())
+            }.onSuccess {
+                getProductsDB().collect{
+                    _state.value = MainState.Success(it.toListProductModel())
                 }
-                if (it.error != null) {
-                    _state.value = MainState.Error(it.error)
-                }
+            }.onFailure {
+                _state.value = MainState.Error("Falha ao excluir produtos")
             }
         }
     }
@@ -41,17 +46,23 @@ class MainViewModel @Inject constructor(
     private fun getAllProducts() {
         viewModelScope.launch {
             _state.value = MainState.Loading
-            productUseCase.getAllProducts().collect { result ->
-                when {
-                    result.success != null -> {
-                        _state.value = MainState.Success(result.success)
-                    }
+            getProductsDB()
+        }
+    }
 
-                    result.error != null -> {
-                        _state.value = MainState.Error(result.error)
-                    }
-                }
-            }
+    private suspend fun getProductsDB(): Flow<List<ProductEntity>> {
+        return runCatching {
+            productRepository.getAllProducts()
+        }.onSuccess { resultSuccess ->
+            getSuccessResult(resultSuccess)
+        }.onFailure {
+            _state.value = MainState.Error("Falha ao buscar os produtos")
+        }.getOrThrow()
+    }
+
+    private suspend fun getSuccessResult(resultSuccess: Flow<List<ProductEntity>>) {
+        resultSuccess.collect { listEntity ->
+            _state.value = MainState.Success(listEntity.toListProductModel())
         }
     }
 }

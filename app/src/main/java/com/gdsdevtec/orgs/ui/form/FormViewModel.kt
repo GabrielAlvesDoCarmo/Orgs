@@ -2,17 +2,18 @@ package com.gdsdevtec.orgs.ui.form
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gdsdevtec.orgs.data.usecase.ProductUseCase
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.data.mapper.toProductEntity
+import com.gdsdevtec.orgs.data.mapper.toProductModel
+import com.gdsdevtec.orgs.data.repository.ProductRepository
+import com.gdsdevtec.orgs.model.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FormViewModel @Inject constructor(
-    private val productUseCase: ProductUseCase
+    private val productRepository: ProductRepository
 ) : ViewModel() {
     private var _state = MutableStateFlow<FormState>(FormState.Empty)
     val state: StateFlow<FormState> get() = _state
@@ -26,15 +27,15 @@ class FormViewModel @Inject constructor(
 
     private fun getProductForId(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = productUseCase.getForId(id).single()
-            when {
-                result.success != null -> {
-                    _state.value = FormState.SuccessGetProductForId(result.success)
+            runCatching {
+                productRepository.getForId(id)
+            }.onSuccess { stateSuccess ->
+                stateSuccess.collect { productEntity ->
+                    val product = productEntity?.let { it.toProductModel() }
+                    _state.value = FormState.SuccessGetProductForId(product)
                 }
-
-                result.error != null -> {
-                    _state.value = FormState.ErrorFormProduct(result.error)
-                }
+            }.onFailure {
+                _state.value = FormState.ErrorFormProduct("Falha ao carregar item ")
             }
         }
     }
@@ -42,15 +43,12 @@ class FormViewModel @Inject constructor(
     private fun saveProduct(product: Product) {
         _state.value = FormState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            val result = productUseCase.save(product).single()
-            when {
-                result.success != null -> {
-                    _state.value = FormState.SaveProduct
-                }
-
-                result.error != null -> {
-                    _state.value = FormState.ErrorFormProduct(result.error)
-                }
+            runCatching {
+                productRepository.save(product.toProductEntity())
+            }.onSuccess {
+                _state.value = FormState.SaveProduct
+            }.onFailure {
+                _state.value = FormState.ErrorFormProduct("Falha ao salvar o producto")
             }
         }
     }

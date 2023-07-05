@@ -1,6 +1,6 @@
 package com.gdsdevtec.orgs.di
 
-import com.gdsdevtec.orgs.data.usecase.ProductUseCase
+import com.gdsdevtec.orgs.data.repository.ProductRepository
 import com.gdsdevtec.orgs.ui.detail.DetailsViewModel
 import com.gdsdevtec.orgs.ui.form.FormViewModel
 import com.gdsdevtec.orgs.ui.main.MainViewModel
@@ -15,21 +15,21 @@ class ActivityInjection {
 
     @Provides
     fun getMainViewModel(
-        productUseCase: ProductUseCase
+        productRepository: ProductRepository
     ) : MainViewModel{
-        return MainViewModel(productUseCase)
+        return MainViewModel(productRepository)
     }
 
     @Provides
     fun getFormViewModel(
-        productUseCase: ProductUseCase
+        productRepository: ProductRepository
     ) : FormViewModel{
-        return FormViewModel(productUseCase)
+        return FormViewModel(productRepository)
     }
     @Provides
     fun getDetailsViewModel(
-        productUseCase: ProductUseCase
+        productRepository: ProductRepository
     ) : DetailsViewModel{
-        return DetailsViewModel(productUseCase)
+        return DetailsViewModel(productRepository)
     }
 }

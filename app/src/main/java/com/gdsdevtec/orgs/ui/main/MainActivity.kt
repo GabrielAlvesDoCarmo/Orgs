@@ -21,7 +21,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.ActivityMainBinding
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.ui.detail.DetailsProductActivity
 import com.gdsdevtec.orgs.ui.form.FormActivity
 import com.gdsdevtec.orgs.utils.const.Constants
@@ -37,44 +37,36 @@ import kotlin.math.abs
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val preferences by lazy { OrgsPreferences.getInstance(this) }
-    private val dialogUtils by lazy { DialogUtils(this) }
     private val requestCamera = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { result ->
         if (result) launchCam.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
     }
-
     private val launchCam = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) setImageCamAppBar(result)
     }
-
-    @Inject
-    lateinit var viewModel: MainViewModel
+    @Inject lateinit var viewModel: MainViewModel
     private lateinit var productAdapter: ProductsAdapter
+    private lateinit var dialogUtils: DialogUtils
     private var allProducts: List<Product> = listOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        getAllProductsDb()
+            getAllProductsDb()
         bindingSetup()
         observers()
     }
-
-    private fun getAllProductsDb() = viewModel.submitActions(
-        MainActions.GetAllProducts
-    )
 
     private fun observers() {
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 when (state) {
-                    is MainState.Success -> successStateList(state.listProducts)
-                    is MainState.SuccessDelete -> TODO()
-                    is MainState.Loading -> binding.swipeRefreshLayout.isRefreshing = true
                     is MainState.Empty -> productAdapter.updateList(listOf())
                     is MainState.Error -> TODO()
+                    is MainState.Loading -> binding.swipeRefreshLayout.isRefreshing = true
+                    is MainState.Success -> successStateList(state.listProducts)
                 }
             }
         }
@@ -85,11 +77,18 @@ class MainActivity : AppCompatActivity() {
         productAdapter.updateList(listProducts)
     }
 
+    private fun getAllProductsDb() {
+        viewModel.submitActions(MainActions.GetAllProducts)
+    }
+
     private fun bindingSetup() = binding.run {
+        dialogUtils = DialogUtils(this@MainActivity)
         setupAppBar()
         productAdapter = productsAdapter()
         rvMain.adapter = productAdapter
-        mainFabAdd.onClick { nextScreen(FormActivity()) }
+        mainFabAdd.onClick {
+            nextScreen(FormActivity())
+        }
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.submitActions(MainActions.GetAllProducts)
         }
@@ -108,7 +107,9 @@ class MainActivity : AppCompatActivity() {
         }
         changeIconsAppBarColor(menu, getColor(R.color.color_primary_variant))
         navigationIcon?.setTint(getColor(R.color.color_primary_variant))
-        setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_name_desc -> {
@@ -205,7 +206,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun productsAdapter() = ProductsAdapter(
         listProducts = allProducts,
-        imageLoader = dialogUtils.imageLoader,
+        imageLoader = DialogUtils(this@MainActivity).imageLoader,
         itemSelected = { itemSelected ->
             nextScreen(DetailsProductActivity(), Pair(Constants.PRODUCT_ID, itemSelected.id))
         },
@@ -225,12 +226,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickMenuPopUpItem(itemMenu: MenuItem?, product: Product): Boolean {
         when (itemMenu?.itemId) {
-            R.id.menu_editable -> nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, product.id))
-            R.id.menu_excluded -> viewModel.submitActions(MainActions.DeleteProduct(product))
+            R.id.menu_editable -> {
+                nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, product.id))
+            }
+
+            R.id.menu_excluded -> {
+                viewModel.submitActions(MainActions.DeleteProduct(product))
+            }
         }
         return true
     }
-
     private fun setImageCamAppBar(result: ActivityResult) {
         val img = result.data?.extras?.get("data") as? Bitmap
         img?.let {
@@ -242,7 +247,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun changeColorStatusBar(): Boolean {
         dialogUtils.colorDialog(
             titleDialogColor = getString(R.string.selecione_a_cor_da_status_bar),

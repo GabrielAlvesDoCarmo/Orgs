@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.gdsdevtec.orgs.R
 import com.gdsdevtec.orgs.databinding.ActivityDetailsProductBinding
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.ui.form.FormActivity
 import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
@@ -39,7 +39,7 @@ class DetailsProductActivity : AppCompatActivity() {
                 when(state){
                     is DetailsState.Success -> setProductDetail(state.product)
                     is DetailsState.Error -> TODO()
-                    is DetailsState.Empty -> setProductDetail(null)
+                    is DetailsState.Empty -> TODO()
                 }
             }
         }

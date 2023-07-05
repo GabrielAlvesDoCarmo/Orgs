@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import com.gdsdevtec.orgs.databinding.ItemProductBinding
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.model.Product
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
 import com.gdsdevtec.orgs.utils.ext.onClick
@@ -18,7 +18,7 @@ class ProductsAdapter(
     listProducts: List<Product>,
     private val imageLoader: ImageLoader,
     private val itemSelected: (Product) -> Unit,
-    private val onLongItemClick : (View?, Product)-> Boolean
+    private val onLongItemClick : (View?,Product)-> Boolean
 ) : RecyclerView.Adapter<ProductsAdapter.ProductViewHolder>() {
     inner class ProductViewHolder(val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root)

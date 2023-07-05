@@ -2,9 +2,7 @@ package com.gdsdevtec.orgs.di
 
 import android.content.Context
 import androidx.room.Room
-import com.gdsdevtec.orgs.data.local.database.dao.ProductDao
 import com.gdsdevtec.orgs.data.local.database.db.AppDatabase
-import com.gdsdevtec.orgs.data.repository.ProductRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,11 +27,4 @@ class OrgsInjection {
     @Singleton
     @Provides
     fun getProductDao(db: AppDatabase) = db.productDao()
-
-    @Provides
-    fun getRepositoryProducts(
-        dao : ProductDao
-    ) : ProductRepository {
-        return ProductRepository(dao)
-    }
 }

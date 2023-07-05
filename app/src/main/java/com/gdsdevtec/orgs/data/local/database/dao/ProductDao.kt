@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProductDao {
     @Query("SELECT * FROM PRODUCT")
-    fun getAllProduct() : Flow<List<ProductEntity>?>
+    fun getAllProduct() : Flow<List<ProductEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveProduct(product: ProductEntity)

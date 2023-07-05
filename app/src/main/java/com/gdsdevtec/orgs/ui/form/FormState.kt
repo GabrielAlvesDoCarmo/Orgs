@@ -1,6 +1,6 @@
 package com.gdsdevtec.orgs.ui.form
 
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.model.Product
 
 sealed interface FormState{
     object Empty : FormState

@@ -1,6 +1,6 @@
 package com.gdsdevtec.orgs.ui.detail
 
-import com.gdsdevtec.orgs.domain.products.Product
+import com.gdsdevtec.orgs.model.Product
 
 sealed interface DetailsState {
     data class Success(val product: Product? = null) : DetailsState
