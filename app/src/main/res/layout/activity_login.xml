@@ -34,7 +34,8 @@
             app:layout_constraintTop_toBottomOf="@id/activity_login_imagem_logo" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputlayout_usuario"
+            android:id="@+id/input_product_layout_user_name"
+            android:layout_width="@dimen/spacing_none"
             android:layout_height="wrap_content"
             android:hint="@string/user"
             android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
@@ -44,34 +45,34 @@
             style="@style/TextInputLayoutDefault"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/activity_login_titulo">
+            app:layout_constraintTop_toBottomOf="@+id/activity_login_titulo">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/activity_login_usuario"
+                android:id="@+id/input_product_edit_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
-
+                android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputlayout_senha"
+            android:id="@+id/input_product_layout_password"
+            android:layout_width="@dimen/spacing_none"
             android:layout_height="wrap_content"
             android:hint="@string/password"
             android:layout_marginHorizontal="@dimen/margin_horizontal_text_field_form"
             android:layout_marginTop="16dp"
-            app:startIconDrawable="@drawable/ic_person_name"
+            app:startIconDrawable="@drawable/ic_password"
             app:startIconContentDescription="@string/icon_name_description"
             style="@style/TextInputLayoutDefault"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInputlayout_usuario">
+            app:layout_constraintTop_toBottomOf="@+id/input_product_layout_user_name">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/activity_login_senha"
+                android:id="@+id/input_product_edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -82,10 +83,11 @@
             android:textAllCaps="false"
             android:layout_marginTop="8dp"
             android:textColor="@color/white"
+            android:layout_marginHorizontal="16dp"
             android:text="Entrar"
-            app:layout_constraintEnd_toEndOf="@id/textInputlayout_senha"
-            app:layout_constraintStart_toStartOf="@id/textInputlayout_senha"
-            app:layout_constraintTop_toBottomOf="@id/textInputlayout_senha" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_product_layout_password" />
 
 
         <androidx.appcompat.widget.AppCompatButton
@@ -93,6 +95,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
             android:background="@android:color/transparent"
             android:text="cadastrar usuário"
             android:textColor="@color/color_primary_variant"
