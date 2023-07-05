@@ -13,6 +13,7 @@ import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
 import com.gdsdevtec.orgs.utils.ext.convertBigDecimalForCurrencyLocale
 import com.gdsdevtec.orgs.utils.ext.loadImageDataWithUrl
+import com.gdsdevtec.orgs.utils.ext.message
 import com.gdsdevtec.orgs.utils.ext.nextScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,9 +24,13 @@ class DetailsProductActivity : AppCompatActivity() {
     private val binding: ActivityDetailsProductBinding by lazy {
         ActivityDetailsProductBinding.inflate(layoutInflater)
     }
+    private val dialogUtils by lazy {
+        DialogUtils(this@DetailsProductActivity)
+    }
     @Inject
     lateinit var viewModel: DetailsViewModel
     private var productId: Long = 0L
+    private var product : Product? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -33,24 +38,34 @@ class DetailsProductActivity : AppCompatActivity() {
         observers()
     }
 
+    private fun setupActivity() {
+        productId = intent.getLongExtra(Constants.PRODUCT_ID, 0L)
+        viewModel.submitActions(DetailsActions.GetProductForId(productId))
+    }
+
     private fun observers() {
         lifecycleScope.launch {
-            viewModel.state.collect{state->
-                when(state){
-                    is DetailsState.Success -> setProductDetail(state.product)
-                    is DetailsState.Error -> TODO()
-                    is DetailsState.Empty -> TODO()
+            viewModel.state.collect { state ->
+                when (state) {
+                    is DetailsState.Success -> {
+                        product = state.product
+                        setProductDetail(state.product)
+                    }
+                    is DetailsState.Error -> {
+                        message("deu ruim")
+                    }
+                    is DetailsState.Empty -> {
+                        return@collect
+                    }
+                    is DetailsState.ExcludedSuccess -> {
+                        finish()
+                    }
                 }
             }
         }
     }
 
-    private fun setupActivity() {
-        productId = intent.getLongExtra(Constants.PRODUCT_ID, 0L)
-        viewModel.submitActions(
-            DetailsActions.GetProductForId(productId)
-        )
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_description_producs, menu)
@@ -66,20 +81,25 @@ class DetailsProductActivity : AppCompatActivity() {
     }
 
     private fun clickExcludedMenu(): Boolean {
-
-        finish()
+        product?.let {safeProduct->
+            viewModel.submitActions(DetailsActions.ExcludedProduct(safeProduct))
+            finish()
+        }
         return true
     }
 
     private fun clickEditableMenu(): Boolean {
-        nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, productId))
+        nextScreen(
+            activity = FormActivity::class.java,
+            arguments = Pair(Constants.PRODUCT_ID, productId)
+        )
         return true
     }
 
     private fun setProductDetail(product: Product?) = with(binding) {
         product?.let { safeProduct ->
             detailsProductImageView.loadImageDataWithUrl(
-                DialogUtils(this@DetailsProductActivity).imageLoader,
+                dialogUtils.imageLoader,
                 safeProduct.image
             )
             detailsProductTextValue.text = safeProduct.value.convertBigDecimalForCurrencyLocale()

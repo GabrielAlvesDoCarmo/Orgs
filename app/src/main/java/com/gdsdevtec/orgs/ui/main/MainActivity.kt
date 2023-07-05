@@ -26,6 +26,7 @@ import com.gdsdevtec.orgs.ui.detail.DetailsProductActivity
 import com.gdsdevtec.orgs.ui.form.FormActivity
 import com.gdsdevtec.orgs.utils.const.Constants
 import com.gdsdevtec.orgs.utils.ext.DialogUtils
+import com.gdsdevtec.orgs.utils.ext.message
 import com.gdsdevtec.orgs.utils.ext.nextScreen
 import com.gdsdevtec.orgs.utils.ext.onClick
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,24 +50,35 @@ class MainActivity : AppCompatActivity() {
     }
     @Inject lateinit var viewModel: MainViewModel
     private lateinit var productAdapter: ProductsAdapter
-    private lateinit var dialogUtils: DialogUtils
+    private val dialogUtils: DialogUtils by lazy {
+        DialogUtils(this)
+    }
     private var allProducts: List<Product> = listOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-            getAllProductsDb()
+        getAllProductsDb()
         bindingSetup()
         observers()
     }
+
+    private fun getAllProductsDb() = viewModel.submitActions(MainActions.GetAllProducts)
 
     private fun observers() {
         lifecycleScope.launch {
             viewModel.state.collect { state ->
                 when (state) {
-                    is MainState.Empty -> productAdapter.updateList(listOf())
-                    is MainState.Error -> TODO()
-                    is MainState.Loading -> binding.swipeRefreshLayout.isRefreshing = true
-                    is MainState.Success -> successStateList(state.listProducts)
+                    is MainState.Empty -> {
+                        productAdapter.updateList(listOf())
+                    }
+                    is MainState.Error -> message("erro")
+                    is MainState.Loading -> {
+                        binding.swipeRefreshLayout.isRefreshing = true
+                    }
+                    is MainState.Success -> {
+                        allProducts = state.listProducts
+                        successStateList(state.listProducts)
+                    }
                 }
             }
         }
@@ -77,17 +89,13 @@ class MainActivity : AppCompatActivity() {
         productAdapter.updateList(listProducts)
     }
 
-    private fun getAllProductsDb() {
-        viewModel.submitActions(MainActions.GetAllProducts)
-    }
 
     private fun bindingSetup() = binding.run {
-        dialogUtils = DialogUtils(this@MainActivity)
         setupAppBar()
         productAdapter = productsAdapter()
         rvMain.adapter = productAdapter
         mainFabAdd.onClick {
-            nextScreen(FormActivity())
+            nextScreen(FormActivity::class.java)
         }
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.submitActions(MainActions.GetAllProducts)
@@ -206,9 +214,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun productsAdapter() = ProductsAdapter(
         listProducts = allProducts,
-        imageLoader = DialogUtils(this@MainActivity).imageLoader,
+        imageLoader = dialogUtils.imageLoader,
         itemSelected = { itemSelected ->
-            nextScreen(DetailsProductActivity(), Pair(Constants.PRODUCT_ID, itemSelected.id))
+            nextScreen(DetailsProductActivity::class.java, Pair(Constants.PRODUCT_ID, itemSelected.id))
         },
         onLongItemClick = ::onLongItemClick
     )
@@ -226,13 +234,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickMenuPopUpItem(itemMenu: MenuItem?, product: Product): Boolean {
         when (itemMenu?.itemId) {
-            R.id.menu_editable -> {
-                nextScreen(FormActivity(), Pair(Constants.PRODUCT_ID, product.id))
-            }
-
-            R.id.menu_excluded -> {
-                viewModel.submitActions(MainActions.DeleteProduct(product))
-            }
+            R.id.menu_editable -> nextScreen(FormActivity::class.java, Pair(Constants.PRODUCT_ID, product.id))
+            R.id.menu_excluded -> viewModel.submitActions(MainActions.DeleteProduct(product))
         }
         return true
     }
@@ -268,7 +271,7 @@ class MainActivity : AppCompatActivity() {
                 binding.includeToolbar.apply {
                     appBarImageView.isVisible = false
                     appbarContainer.setBackgroundColor(newColorAppBar)
-                    OrgsPreferences(this@MainActivity).saveColorAppBar(newColorAppBar)
+                    preferences.saveColorAppBar(newColorAppBar)
                 }
                 showDialogColorFAB()
             },

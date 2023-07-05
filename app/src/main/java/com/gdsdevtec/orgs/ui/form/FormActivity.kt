@@ -38,7 +38,6 @@ class FormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         getProductDb()
-        setProductForEdit()
         setupActivity()
         observer()
     }
@@ -51,18 +50,6 @@ class FormActivity : AppCompatActivity() {
         )
     }
 
-    private fun setProductForEdit() = binding.run {
-        product?.let { safeProduct ->
-            url = safeProduct.image
-            formImageProduct.loadImageDataWithUrl(dialog.imageLoader, safeProduct.image)
-            inputProductEditName.setText(safeProduct.name)
-            inputProductEditDescription.setText(safeProduct.description)
-            inputProductEditValue.setText(safeProduct.value.toPlainString())
-            inputProductEditDate.setText(safeProduct.date)
-            inputProductEditHour.setText(safeProduct.time)
-        }
-    }
-
     private fun observer() {
         lifecycleScope.launch {
             viewModel.state.collect { state ->
@@ -71,6 +58,7 @@ class FormActivity : AppCompatActivity() {
                     is FormState.SuccessGetProductForId -> {
                         binding.progressBarForm.hide()
                         product = state.product
+                        setProductForEdit()
                     }
                     is FormState.SaveProduct -> finish()
                     is FormState.Empty -> binding.progressBarForm.hide()
@@ -83,12 +71,23 @@ class FormActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun setProductForEdit() = binding.run {
+        product?.let { safeProduct ->
+            url = safeProduct.image
+            formImageProduct.loadImageDataWithUrl(dialog.imageLoader, safeProduct.image)
+            inputProductEditName.setText(safeProduct.name)
+            inputProductEditDescription.setText(safeProduct.description)
+            inputProductEditValue.setText(safeProduct.value.toPlainString())
+            inputProductEditDate.setText(safeProduct.date)
+            inputProductEditHour.setText(safeProduct.time)
+        }
+    }
     private fun setupActivity() = with(binding) {
         timePicker = setupMaterialTimePicker()
         dataPicker = setupMaterialDatePicker()
         inputBtnSave.onClick {
             saveProduct()
-            finish()
         }
         formImageProduct.onClick {
             showDialogImageProduct()
@@ -140,6 +139,7 @@ class FormActivity : AppCompatActivity() {
                 getProduct()
             )
         )
+        finish()
     }
 
     private fun getProduct() = binding.run {

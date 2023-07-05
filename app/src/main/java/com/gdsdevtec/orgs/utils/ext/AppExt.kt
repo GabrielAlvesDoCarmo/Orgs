@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import coil.ImageLoader
 import coil.load
 import com.gdsdevtec.orgs.R
-import com.gdsdevtec.orgs.data.local.database.entity.ProductEntity
 import com.google.android.material.textfield.TextInputLayout
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -19,10 +18,10 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-fun AppCompatActivity.nextScreen(activity: AppCompatActivity) =
-    startActivity(Intent(this, activity::class.java))
-fun AppCompatActivity.nextScreen(activity: AppCompatActivity, arguments: Pair<String, Long>) {
-    Intent(this, activity::class.java).apply {
+fun AppCompatActivity.nextScreen(activity: Class<*>) =
+    startActivity(Intent(this, activity))
+fun AppCompatActivity.nextScreen(activity: Class<*>, arguments: Pair<String, Long>) {
+    Intent(this, activity).apply {
         putExtra(arguments.first, arguments.second)
         startActivity(this)
     }
