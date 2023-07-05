@@ -105,6 +105,8 @@ class DetailsProductActivity : AppCompatActivity() {
             detailsProductTextValue.text = safeProduct.value.convertBigDecimalForCurrencyLocale()
             detailsProductTextTitle.text = safeProduct.name
             detailsProductTextDescription.text = safeProduct.description
+            itemDateEvent.text = safeProduct.date
+            itemTimeEvent.text = safeProduct.time
         }
     }
 }

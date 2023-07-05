@@ -3,6 +3,7 @@ package com.gdsdevtec.orgs.di
 import android.content.Context
 import androidx.room.Room
 import com.gdsdevtec.orgs.data.local.database.db.AppDatabase
+import com.gdsdevtec.orgs.data.local.database.migrations.MIGRATIONS_1_2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +22,7 @@ class OrgsInjection {
             context,
             AppDatabase::class.java,
             "orgs.db"
-        ).build()
+        ).addMigrations(MIGRATIONS_1_2).build()
     }
 
     @Singleton
